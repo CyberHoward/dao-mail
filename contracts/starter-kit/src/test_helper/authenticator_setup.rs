@@ -24,7 +24,7 @@ pub fn spend_limit_store_code(wasm: &Wasm<'_, OsmosisTestApp>, acc: &SigningAcco
         .join("target")
         .join("wasm32-unknown-unknown")
         .join("release")
-        .join("starter-kit.wasm");
+        .join("authenticator_starter_kit.wasm");
 
     let wasm_bytes = std::fs::read(wasm_path).unwrap();
 
