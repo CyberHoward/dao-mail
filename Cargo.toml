@@ -1,0 +1,36 @@
+[package]
+name = "email-dao"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+default = ["async-native-tls/runtime-tokio", "async-smtp/runtime-tokio", "async-imap/runtime-tokio"]
+
+[dependencies]
+jsonwebtoken = "8.1.1"
+reqwest = { version = "0.11", features = ["json"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+chrono = "0.4"
+tokio = {version = "1", features = ["full"]}
+# imap = "3.0.0-alpha.14"
+anyhow = "1"
+log = "0.4.22"
+dotenv = "0.15.0"
+env_logger = "0.11.5"
+rust-gmail = "0.2.1"
+base64 = "0.22.1"
+async-native-tls = {version = "0.5.0", default-features = false}
+async-imap = {version = "0.10.2", default-features = false}
+async-smtp = {version = "0.9.2", default-features = false}
+futures = "0.3.28"
+google-gmail1 = "6.0.0"
+hyper = "1.5.0"
+hyper-rustls = {version = "0.27.3", features = ["ring"]}
+rustls = {version = "0.23.15", features = ["ring"]}
+chatgpt_rs = "1.2.3"
+tempfile = "3.13.0"
+cw-orch-daemon = "0.28.0"
+cw3 = "2.0.0"
+cosmwasm-std = "2.1.4"
+
