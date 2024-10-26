@@ -3,7 +3,7 @@
 #![cfg(all(test, not(tarpaulin)))]
 
 use cosmwasm_std::{Coin, Timestamp, Uint128, wasm_execute};
-use osmosis_std::types::cosmwasm::wasm::v1::MsgExecuteContractResponse;
+use osmosis_std::types::cosmwasm::wasm::v1::{MsgExecuteContractResponse, MsgInstantiateContractResponse};
 use osmosis_std::types::osmosis::smartaccount;
 // XXX: Leaving commented here for an example
 // use osmosis_std::types::osmosis::poolmanager::v1beta1::{
@@ -26,7 +26,9 @@ use crate::{
         add_email_auth_authenticator, email_auth_instantiate, spend_limit_store_code,
     },
 };
+use crate::dkim::DomainAuthConfig;
 use crate::msg::ExecuteMsg;
+use crate::test_helper::constants::{ABSTRACT_DKIM_PUBLIC_KEY, ABSTRACT_DOMAIN};
 //const UUSDC: &str = "ibc/498A0751C798A0D9A389AA3691123DADA57DAA4FE165D5C75894505B876BA6E4";
 //const UATOM: &str = "ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2";
 
@@ -50,18 +52,34 @@ fn test_happy_path_integration() {
 
     // Store code and initialize spend limit contract
     let code_id = spend_limit_store_code(&wasm, &acc_1);
-    let contract_addr = email_auth_instantiate(
+    let ExecuteResponse::<_> { data: MsgInstantiateContractResponse { address: authenticator_addr, .. }, events, .. }  = email_auth_instantiate(
         &wasm,
         code_id,
         &InstantiateMsg {
-            // params: params.clone()
+            auth: DomainAuthConfig {
+                domain: ABSTRACT_DOMAIN.to_string(),
+                dkim_pk: ABSTRACT_DKIM_PUBLIC_KEY.to_string(),
+            },
+            params: params.clone(),
         },
         &acc_1,
     );
 
-    app.execute_cosmos_msgs::<MsgExecuteContractResponse>(&[wasm_execute(contract_addr.clone(), &ExecuteMsg::Setup {
-        params: params.clone()
-    }, vec![]).unwrap().into()], &acc_1).unwrap();
+    println!("Events: {:?}", events);
+
+    // let authenticator_id =
+
+    // let email_dao_addr = email_auth_instantiate(
+    //     &wasm,
+    //     code_id,
+    //     &InstantiateMsg {},
+    //     &acc_1,
+    // );
+
+    // execute_email_dao(&app, &acc_1, &authenticator_addr, ExecuteMsg::AddAuthenticator {
+    //     contract: authenticator_addr.clone(),
+    //     params: params.clone()
+    // }).unwrap();
 
 //    let spend_limit_querier = SpendLimitQuerier::new(&app, contract_addr.to_string());
 
@@ -70,7 +88,7 @@ fn test_happy_path_integration() {
     let spend_limit_auth_id = add_email_auth_authenticator(
         &app,
         &acc_1,
-        &contract_addr,
+        &authenticator_addr,
         &params,
     );
 
@@ -150,6 +168,10 @@ fn test_happy_path_integration() {
 //        err.to_string(),
 //        SpendLimitError::overspend(1_500_000, 1_500_001).to_string()
 //    );
+}
+
+fn execute_email_dao(app: &OsmosisTestApp, account: &SigningAccount, email_dao_addr: &str, msg: ExecuteMsg) -> RunnerExecuteResult<MsgExecuteContractResponse> {
+    app.execute_cosmos_msgs::<MsgExecuteContractResponse>(&[wasm_execute(email_dao_addr.to_string(), &msg, vec![]).unwrap().into()], account)
 }
 
 const MAXIMUM_UNAUTHENTICATED_GAS: u64 = 120_000;

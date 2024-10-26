@@ -17,5 +17,8 @@ pub use crate::error::ContractError;
 
 pub mod helpers;
 mod handlers;
+mod cw3;
+mod replies;
+mod dkim;
 // #[cfg(not(target_arch = "wasm32"))]
 // pub mod interface;

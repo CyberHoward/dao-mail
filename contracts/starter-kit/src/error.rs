@@ -1,12 +1,13 @@
 use thiserror::Error;
 
 use cosmwasm_std::{CoinsError, StdError};
-
+use cw3::DepositError;
 use crate::{
 authenticator::AuthenticatorError,
 counter::error::CounterError,
 };
 use cw_ownable::OwnershipError;
+use cw_utils::{PaymentError, ThresholdError};
 
 /// Never is a placeholder to ensure we don't return any errors
 #[derive(Error, Debug)]
@@ -31,4 +32,42 @@ pub enum ContractError {
 
     #[error("Ownership error: {0}")]
     OwnershipError(#[from] OwnershipError),
+
+
+    // cw3
+    #[error("{0}")]
+    Threshold(#[from] ThresholdError),
+
+    #[error("Group contract invalid address '{addr}'")]
+    InvalidGroup { addr: String },
+
+    #[error("Proposal is not open")]
+    NotOpen {},
+
+    #[error("Proposal voting period has expired")]
+    Expired {},
+
+    #[error("Proposal must expire before you can close it")]
+    NotExpired {},
+
+    #[error("Wrong expiration option")]
+    WrongExpiration {},
+
+    #[error("Already voted on this proposal")]
+    AlreadyVoted {},
+
+    #[error("Proposal must have passed and not yet been executed")]
+    WrongExecuteStatus {},
+
+    #[error("Cannot close completed or passed proposals")]
+    WrongCloseStatus {},
+
+    #[error("{0}")]
+    Payment(#[from] PaymentError),
+
+    #[error("{0}")]
+    Deposit(#[from] DepositError),
+
+    #[error("Invalid reply id: {0}")]
+    InvalidReplyId(u64),
 }

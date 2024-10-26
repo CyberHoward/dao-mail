@@ -5,10 +5,11 @@
 use std::path::PathBuf;
 
 use cosmwasm_std::to_json_binary;
+use osmosis_std::types::cosmwasm::wasm::v1::{MsgExecuteContractResponse, MsgInstantiateContractResponse};
 use osmosis_std::types::osmosis::smartaccount::v1beta1::{
     MsgAddAuthenticator, MsgAddAuthenticatorResponse,
 };
-use osmosis_test_tube::{Account, OsmosisTestApp, Runner, SigningAccount, Wasm};
+use osmosis_test_tube::{Account, ExecuteResponse, OsmosisTestApp, Runner, SigningAccount, Wasm};
 use serde::Serialize;
 
 use crate::{
@@ -35,6 +36,23 @@ pub fn spend_limit_store_code(wasm: &Wasm<'_, OsmosisTestApp>, acc: &SigningAcco
 }
 
 pub fn email_auth_instantiate(
+    wasm: &Wasm<'_, OsmosisTestApp>,
+    code_id: u64,
+    msg: &InstantiateMsg,
+    acc: &SigningAccount,
+) -> ExecuteResponse<MsgInstantiateContractResponse> {
+    wasm.instantiate(
+        code_id,
+        msg,
+        None,
+        Some("email_authenticator"),
+        &[],
+        acc,
+    )
+        .unwrap()
+}
+
+pub fn email_auth_instantiate_addr(
     wasm: &Wasm<'_, OsmosisTestApp>,
     code_id: u64,
     msg: &InstantiateMsg,

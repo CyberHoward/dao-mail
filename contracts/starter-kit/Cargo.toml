@@ -33,10 +33,17 @@ serde = "1.0.180"
 thiserror = { version = "1.0.23" }
 time = { version = "0.3.31", features = ["macros"] }
 cw-ownable = "0.5.1"
+cw3 = "1.1.2"
+cw3-fixed-multisig = {  version = "1.1.2", features = ["library"] }
+cw4 = "1.1.2"
+cw-utils= "1.0.3"
 
+#ring = { version = "0.17.0", default-features = false }
 ring = { version = "0.17.0", features = ["wasm32_unknown_unknown_js"] }
-base64 = "0.13.0"
+base64 = "0.22.1"
 pem = "1.0.2" # for parsing PEM-formatted public keys
+rsa = "0.8.0"
+sha2 = "0.10.6"
 
 # Testing / deployment
 cw-orch = { version = "0.26.0" }

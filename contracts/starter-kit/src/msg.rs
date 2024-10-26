@@ -5,10 +5,12 @@ use cosmwasm_std::{CosmosMsg, Uint64};
 pub use cw_authenticator::AuthenticatorSudoMsg as SudoMsg;
 use cw_ownable::cw_ownable_execute;
 use crate::counter::params::CounterParams;
+use crate::dkim::DomainAuthConfig;
 
 #[cw_serde]
 pub struct InstantiateMsg {
-    // pub params: CounterParams,
+    pub params: CounterParams,
+    pub auth: DomainAuthConfig,
 }
 
 #[cw_ownable_execute]
@@ -16,7 +18,8 @@ pub struct InstantiateMsg {
 #[derive(cw_orch::ExecuteFns)]
 pub enum ExecuteMsg {
     Count {},
-    Setup {
+    AddAuthenticator {
+        contract: String,
         params: CounterParams,
     },
     Execute {

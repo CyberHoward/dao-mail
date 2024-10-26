@@ -1,56 +1,17 @@
 use crate::authenticator::{self, CosmwasmAuthenticatorData};
 use crate::msg::{
-    CounterResponse, ExecuteMsg, InstantiateMsg, QueryMsg, SudoMsg
+    CounterResponse, InstantiateMsg, QueryMsg, SudoMsg
 };
 use crate::counter::error::CounterError;
-use crate::state::{COUNT_TEST, COUNTERS};
+use crate::state::COUNTERS;
 use crate::ContractError;
 #[cfg(not(feature = "library"))]
 use cosmwasm_std::entry_point;
-use cosmwasm_std::{Addr, Binary, Deps, DepsMut, Env, MessageInfo, Response, to_json_binary, Uint128, Uint64};
-use osmosis_std::types::osmosis::smartaccount::v1beta1::MsgAddAuthenticator;
-
+use cosmwasm_std::{Addr, Binary, Deps, DepsMut, Env, Response, to_json_binary, Uint128, Uint64};
 pub(crate) const CONTRACT_NAME: &str = "crates.io:dkim-auth";
 pub(crate) const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
 
 const MAX_LIMIT: u32 = 100;
-
-#[cfg_attr(not(feature = "library"), entry_point)]
-pub fn execute(
-    deps: DepsMut,
-    env: Env,
-    info: MessageInfo,
-    msg: ExecuteMsg,
-) -> Result<Response, ContractError> {
-    match msg {
-        ExecuteMsg::UpdateOwnership(action) => {
-            cw_ownable::update_ownership(deps, &env.block, &info.sender, action)?;
-        }
-        ExecuteMsg::Count {} => {
-            COUNT_TEST.update(deps.storage, |count| -> Result<_, ContractError> {
-                Ok(count + 1)
-            })?;
-        }
-        ExecuteMsg::Execute { msgs } => {
-            return Ok(Response::new().add_messages(msgs))
-        },
-        ExecuteMsg::Setup { params } => {
-            let auth_data = CosmwasmAuthenticatorData {
-                contract: env.contract.address.to_string(),
-                params: to_json_binary(&params).unwrap().to_vec(),
-            };
-
-            let add_auth_msg = MsgAddAuthenticator {
-                sender: env.contract.address.to_string(),
-                r#type: "CosmwasmAuthenticatorV1".to_string(),
-                data: to_json_binary(&auth_data).unwrap().to_vec(),
-            };
-
-            return Ok(Response::new().add_message(add_auth_msg))
-        }
-    }
-    Ok(Response::new().add_attribute("action", "excute"))
-}
 
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn sudo(deps: DepsMut, env: Env, msg: SudoMsg) -> Result<Response, ContractError> {
@@ -73,24 +34,6 @@ pub fn sudo(deps: DepsMut, env: Env, msg: SudoMsg) -> Result<Response, ContractE
             authenticator::confirm_execution(deps, env, confirm_execution_request)
         }
     }
-}
-
-#[cfg_attr(not(feature = "library"), entry_point)]
-pub fn query(deps: Deps, env: Env, msg: QueryMsg) -> Result<Binary, ContractError> {
-    match msg {
-        QueryMsg::Counter {
-            account,
-            authenticator_id,
-        } => {
-            let account = deps.api.addr_validate(&account)?;
-            to_json_binary(&query_counter(
-                deps,
-                account,
-                authenticator_id,
-            )?)
-        }
-    }
-    .map_err(ContractError::from)
 }
 
 pub fn query_counter(
@@ -135,7 +78,10 @@ mod tests {
         },
     };
     use crate::counter::params::CounterParams;
+    use crate::dkim::DomainAuthConfig;
     use crate::handlers::instantiate::instantiate;
+    use crate::handlers::query::query;
+    use crate::test_helper::constants::{ABSTRACT_DKIM_PUBLIC_KEY, ABSTRACT_DOMAIN};
     use super::*;
 
     const UUSDC: &str = "ibc/498A0751C798A0D9A389AA3691123DADA57DAA4FE165D5C75894505B876BA6E4";
@@ -173,7 +119,11 @@ mod tests {
             })),
         );
         let msg = InstantiateMsg {
-            // params: params.clone(),
+            auth: DomainAuthConfig {
+                domain: ABSTRACT_DOMAIN.to_string(),
+                dkim_pk: ABSTRACT_DKIM_PUBLIC_KEY.to_string(),
+            },
+            params: params.clone(),
         };
         let info = mock_info("creator", &[]);
         instantiate(deps.as_mut(), mock_env(), info, msg).unwrap();
