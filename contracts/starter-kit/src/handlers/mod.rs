@@ -1,3 +1,3 @@
-pub mod instantiate;
 pub mod execute;
+pub mod instantiate;
 pub mod query;

@@ -1,7 +1,7 @@
+use crate::ContractError;
 use cosmwasm_std::{DepsMut, Env, Reply, Response, StdError};
 use cw_utils::parse_execute_response_data;
 use osmosis_std::types::osmosis::smartaccount::v1beta1::MsgAddAuthenticatorResponse;
-use crate::ContractError;
 
 pub fn reply_on_instantiate(
     _deps: DepsMut,
@@ -59,8 +59,8 @@ pub fn reply_on_instantiate(
     //     value: Binary(set_metadata_req.encode_to_vec()),
     // };
 
-    Ok(Response::new()
-        // .add_submessage(SubMsg::new(sub_msg_set_metadata))
-        // .add_submessage(SubMsg::new(mint_sub_msg)))
+    Ok(
+        Response::new(), // .add_submessage(SubMsg::new(sub_msg_set_metadata))
+                         // .add_submessage(SubMsg::new(mint_sub_msg)))
     )
 }

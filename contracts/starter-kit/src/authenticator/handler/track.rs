@@ -10,9 +10,9 @@ pub fn track(
     TrackRequest {
         account,
         authenticator_id,
-   //     fee_payer,
-   //     fee_granter,
-   //     fee,
+        //     fee_payer,
+        //     fee_granter,
+        //     fee,
         authenticator_params,
         ..
     }: TrackRequest,
@@ -27,12 +27,12 @@ pub fn track(
 mod tests {
     use super::*;
 
+    use crate::counter::params::CounterParams;
     use cosmwasm_std::{
         testing::{mock_dependencies_with_balances, mock_env},
         to_json_binary, Addr, Binary, Coin, Uint128,
     };
     use cw_authenticator::TrackRequest;
-    use crate::counter::params::CounterParams;
 
     #[test]
     fn test_track_success() {
@@ -61,19 +61,19 @@ mod tests {
         assert_eq!(response, Response::new().add_attribute("action", "track"));
 
         // Verify that the pre_exec_balance is updated
-//        let key = (&Addr::unchecked("addr"), "2");
-//        let pre_exec_balance = PRE_EXEC_BALANCES.load(deps.as_ref().storage, key).unwrap();
-//        assert_eq!(pre_exec_balance, vec![Coin::new(1000, "uusdc")]);
-//
-//        let untracked_spent_fee = UNTRACKED_SPENT_FEES
-//            .load(deps.as_ref().storage, key)
-//            .unwrap_or_default();
-//        assert_eq!(
-//            untracked_spent_fee,
-//            UntrackedSpentFee {
-//                fee,
-//                updated_at: mock_env().block.time,
-//            }
-//        );
+        //        let key = (&Addr::unchecked("addr"), "2");
+        //        let pre_exec_balance = PRE_EXEC_BALANCES.load(deps.as_ref().storage, key).unwrap();
+        //        assert_eq!(pre_exec_balance, vec![Coin::new(1000, "uusdc")]);
+        //
+        //        let untracked_spent_fee = UNTRACKED_SPENT_FEES
+        //            .load(deps.as_ref().storage, key)
+        //            .unwrap_or_default();
+        //        assert_eq!(
+        //            untracked_spent_fee,
+        //            UntrackedSpentFee {
+        //                fee,
+        //                updated_at: mock_env().block.time,
+        //            }
+        //        );
     }
 }

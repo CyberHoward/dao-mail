@@ -6,7 +6,7 @@ use cosmwasm_std::{
     WasmQuery,
 };
 
-use crate::msg::{ExecuteMsg, CounterResponse, QueryMsg};
+use crate::msg::{CounterResponse, ExecuteMsg, QueryMsg};
 
 /// CwTemplateContract is a wrapper around Addr that provides a lot of helpers
 /// for working with this.

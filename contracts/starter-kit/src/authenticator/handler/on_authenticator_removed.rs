@@ -6,7 +6,7 @@ use crate::authenticator::{handler::validate_and_parse_params, AuthenticatorErro
 pub fn on_authenticator_removed(
     _deps: DepsMut,
     _env: Env,
-    OnAuthenticatorRemovedRequest{
+    OnAuthenticatorRemovedRequest {
         authenticator_params,
         ..
     }: OnAuthenticatorRemovedRequest,
@@ -18,11 +18,11 @@ pub fn on_authenticator_removed(
 
 #[cfg(test)]
 mod tests {
+    use crate::counter::params::CounterParams;
     use cosmwasm_std::{
         testing::{mock_dependencies, mock_env},
         to_json_binary, Addr,
     };
-    use crate::counter::params::CounterParams;
 
     use super::*;
 

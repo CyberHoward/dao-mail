@@ -25,8 +25,8 @@ fn canonicalize_body(body: &str) -> String {
     let canonicalized = trimmed_body
         .lines()
         .map(|line| line.trim_end()) // Trim each line's trailing whitespace
-        .collect::<Vec<_>>()          // Collect lines as a vector
-        .join("\r\n");                // Join with CRLF
+        .collect::<Vec<_>>() // Collect lines as a vector
+        .join("\r\n"); // Join with CRLF
 
     // Debug output for troubleshooting
     println!("Canonicalized Body:\n{}", canonicalized);
@@ -43,7 +43,10 @@ fn hash_email_body(email_body: &str) -> String {
     let body_hash = digest(&SHA256, canonicalized_body.as_bytes());
 
     // Debug output for troubleshooting
-    println!("Computed SHA-256 Hash (Base64): {}", base64::encode(body_hash.as_ref()));
+    println!(
+        "Computed SHA-256 Hash (Base64): {}",
+        base64::encode(body_hash.as_ref())
+    );
 
     // Encode in base64 to match DKIM's `bh=` value format
     base64::encode(body_hash.as_ref())
@@ -55,9 +58,10 @@ fn hash_email_body_raw(email_body: &str) -> Vec<u8> {
     let canonicalized_body = canonicalize_body(email_body);
 
     // Generate the SHA-256 hash and return raw bytes
-    digest(&SHA256, canonicalized_body.as_bytes()).as_ref().to_vec()
+    digest(&SHA256, canonicalized_body.as_bytes())
+        .as_ref()
+        .to_vec()
 }
-
 
 // // Hashes the email body to verify the `bh=` header in DKIM
 // fn hash_email_body(email_body: &[u8]) -> String {
@@ -91,14 +95,17 @@ mod tests {
         let dkim_body_hash_b64 = "Bxv3VDj2sR90cDRYylWgRfEM8mvoPM1xB5NTdo0G/WI=";
 
         // Decode the base64 `bh=` value to get the expected raw hash bytes
-        let dkim_body_hash_raw = base64::decode(dkim_body_hash_b64)
-            .expect("Failed to decode base64 `bh=` value");
+        let dkim_body_hash_raw =
+            base64::decode(dkim_body_hash_b64).expect("Failed to decode base64 `bh=` value");
 
         // Compute the hash of the canonicalized email body in raw bytes
         let computed_body_hash_raw = hash_email_body_raw("body"); // assuming plain text `body`
 
         // Debug output for verification
-        println!("Expected (Decoded `bh=` Raw Hash): {:?}", dkim_body_hash_raw);
+        println!(
+            "Expected (Decoded `bh=` Raw Hash): {:?}",
+            dkim_body_hash_raw
+        );
         println!("Computed Body Hash Raw Bytes: {:?}", computed_body_hash_raw);
 
         // Compare the decoded `bh=` hash with our computed body hash
@@ -106,8 +113,7 @@ mod tests {
             computed_body_hash_raw, dkim_body_hash_raw,
             "Computed body hash does not match the decoded `bh=` value"
         );
-
-}
+    }
 
     #[test]
     fn test_dkim_verification() {

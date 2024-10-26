@@ -1,12 +1,15 @@
-use cosmwasm_std::{CosmosMsg, DepsMut, entry_point, Env, MessageInfo, Response, SubMsg, to_json_binary, wasm_execute, WasmMsg};
-use cw2::set_contract_version;
-use osmosis_std::types::osmosis::smartaccount::v1beta1::MsgAddAuthenticator;
 use crate::authenticator::CosmwasmAuthenticatorData;
 use crate::contract::{CONTRACT_NAME, CONTRACT_VERSION};
-use crate::ContractError;
 use crate::msg::{ExecuteMsg, InstantiateMsg};
 use crate::replies::reply::INSTANTIATE_REPLY_ID;
 use crate::state::DOMAIN_PKS;
+use crate::ContractError;
+use cosmwasm_std::{
+    entry_point, to_json_binary, wasm_execute, CosmosMsg, DepsMut, Env, MessageInfo, Response,
+    SubMsg, WasmMsg,
+};
+use cw2::set_contract_version;
+use osmosis_std::types::osmosis::smartaccount::v1beta1::MsgAddAuthenticator;
 
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn instantiate(
@@ -31,10 +34,12 @@ pub fn instantiate(
 
     msg.auth.verify()?;
 
-    Ok(Response::new().add_attribute("action", "instantiate").add_message(add_auth_msg)
-    // Ok(Response::new().add_attribute("action", "instantiate").add_submessage(SubMsg::reply_always(add_auth_msg, INSTANTIATE_REPLY_ID))
-    //     .add_submessage(SubMsg::new(wasm_execute(env.contract.address, &ExecuteMsg::Execute {
-    //     msgs: vec![add_auth_msg.into()],
-    // }, vec![])?))
+    Ok(
+        Response::new()
+            .add_attribute("action", "instantiate")
+            .add_message(add_auth_msg), // Ok(Response::new().add_attribute("action", "instantiate").add_submessage(SubMsg::reply_always(add_auth_msg, INSTANTIATE_REPLY_ID))
+                                        //     .add_submessage(SubMsg::new(wasm_execute(env.contract.address, &ExecuteMsg::Execute {
+                                        //     msgs: vec![add_auth_msg.into()],
+                                        // }, vec![])?))
     )
 }

@@ -1,11 +1,11 @@
 pub mod authenticator;
 
 pub mod contract;
+pub mod counter;
 pub mod error;
 pub mod msg;
-pub mod state;
-pub mod counter;
 mod serde;
+pub mod state;
 
 #[cfg(test)]
 pub mod integration;
@@ -15,10 +15,10 @@ mod test_helper;
 
 pub use crate::error::ContractError;
 
-pub mod helpers;
-mod handlers;
 mod cw3;
-mod replies;
 mod dkim;
+mod handlers;
+pub mod helpers;
+mod replies;
 // #[cfg(not(target_arch = "wasm32"))]
 // pub mod interface;

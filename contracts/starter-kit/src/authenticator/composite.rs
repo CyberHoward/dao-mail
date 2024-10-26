@@ -160,9 +160,9 @@ impl CompositeAuthenticator for AccountAuthenticator {
 mod tests {
 
     use super::*;
+    use crate::counter::params::CounterParams;
     use cosmwasm_std::to_json_vec;
     use rstest::rstest;
-    use crate::counter::params::CounterParams;
 
     #[rstest]
     #[case("1", Ok(CompositeId { root: 1, path: vec![] }))]

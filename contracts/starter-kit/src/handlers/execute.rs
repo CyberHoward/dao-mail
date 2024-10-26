@@ -1,9 +1,9 @@
-use cosmwasm_std::{DepsMut, entry_point, Env, MessageInfo, Response, to_json_binary};
-use osmosis_std::types::osmosis::smartaccount::v1beta1::MsgAddAuthenticator;
 use crate::authenticator::CosmwasmAuthenticatorData;
-use crate::ContractError;
 use crate::msg::ExecuteMsg;
 use crate::state::COUNT_TEST;
+use crate::ContractError;
+use cosmwasm_std::{entry_point, to_json_binary, DepsMut, Env, MessageInfo, Response};
+use osmosis_std::types::osmosis::smartaccount::v1beta1::MsgAddAuthenticator;
 
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn execute(
@@ -21,9 +21,7 @@ pub fn execute(
                 Ok(count + 1)
             })?;
         }
-        ExecuteMsg::Execute { msgs } => {
-            return Ok(Response::new().add_messages(msgs))
-        },
+        ExecuteMsg::Execute { msgs } => return Ok(Response::new().add_messages(msgs)),
         ExecuteMsg::AddAuthenticator { params, contract } => {
             let auth_data = CosmwasmAuthenticatorData {
                 contract: contract.to_string(),
@@ -36,7 +34,7 @@ pub fn execute(
                 data: to_json_binary(&auth_data).unwrap().to_vec(),
             };
 
-            return Ok(Response::new().add_message(add_auth_msg))
+            return Ok(Response::new().add_message(add_auth_msg));
         }
     }
     Ok(Response::new().add_attribute("action", "excute"))

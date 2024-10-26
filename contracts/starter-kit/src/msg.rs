@@ -2,10 +2,10 @@ use cosmwasm_schema::{cw_serde, QueryResponses};
 use cosmwasm_std::{CosmosMsg, Uint64};
 
 // re-export the structs from cw_authenticator
-pub use cw_authenticator::AuthenticatorSudoMsg as SudoMsg;
-use cw_ownable::cw_ownable_execute;
 use crate::counter::params::CounterParams;
 use crate::dkim::DomainAuthConfig;
+pub use cw_authenticator::AuthenticatorSudoMsg as SudoMsg;
+use cw_ownable::cw_ownable_execute;
 
 #[cw_serde]
 pub struct InstantiateMsg {
@@ -23,8 +23,8 @@ pub enum ExecuteMsg {
         params: CounterParams,
     },
     Execute {
-        msgs: Vec<CosmosMsg>
-    }
+        msgs: Vec<CosmosMsg>,
+    },
 }
 
 #[cw_serde]

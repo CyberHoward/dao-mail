@@ -1,11 +1,8 @@
 use thiserror::Error;
 
+use crate::{authenticator::AuthenticatorError, counter::error::CounterError};
 use cosmwasm_std::{CoinsError, StdError};
 use cw3::DepositError;
-use crate::{
-authenticator::AuthenticatorError,
-counter::error::CounterError,
-};
 use cw_ownable::OwnershipError;
 use cw_utils::{PaymentError, ThresholdError};
 
@@ -32,7 +29,6 @@ pub enum ContractError {
 
     #[error("Ownership error: {0}")]
     OwnershipError(#[from] OwnershipError),
-
 
     // cw3
     #[error("{0}")]

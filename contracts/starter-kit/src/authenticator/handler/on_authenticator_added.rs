@@ -32,15 +32,15 @@ mod tests {
         let mut deps = mock_dependencies_with_balances(&[("someoneelse", &[Coin::new(1, USDC)])]);
 
         // missing authenticator_params
-     //   let request = OnAuthenticatorAddedRequest {
-     //       authenticator_id: "2".to_string(),
-     //       account: Addr::unchecked("addr"),
-     //       authenticator_params: None,
-     //   };
-     //   assert_eq!(
-     //       on_authenticator_added(deps.as_mut(), mock_env(), request).unwrap_err(),
-     //       AuthenticatorError::MissingAuthenticatorParams
-     //   );
+        //   let request = OnAuthenticatorAddedRequest {
+        //       authenticator_id: "2".to_string(),
+        //       account: Addr::unchecked("addr"),
+        //       authenticator_params: None,
+        //   };
+        //   assert_eq!(
+        //       on_authenticator_added(deps.as_mut(), mock_env(), request).unwrap_err(),
+        //       AuthenticatorError::MissingAuthenticatorParams
+        //   );
 
         // invalid authenticator_params
         let _request = OnAuthenticatorAddedRequest {
@@ -49,13 +49,13 @@ mod tests {
             authenticator_params: Some(to_json_binary(&"invalid").unwrap()),
         };
 
-//        assert_eq!(
-//            on_authenticator_added(deps.as_mut(), mock_env(), request).unwrap_err(),
-//            AuthenticatorError::invalid_authenticator_params(StdError::parse_err(
-//                std::any::type_name::<SpendLimitParams>(),
-//                "Invalid type"
-//            ))
-//        );
+        //        assert_eq!(
+        //            on_authenticator_added(deps.as_mut(), mock_env(), request).unwrap_err(),
+        //            AuthenticatorError::invalid_authenticator_params(StdError::parse_err(
+        //                std::any::type_name::<SpendLimitParams>(),
+        //                "Invalid type"
+        //            ))
+        //        );
 
         // valid
         let request = OnAuthenticatorAddedRequest {
@@ -76,26 +76,26 @@ mod tests {
         );
 
         // check the state
-//        let spending = SPENDINGS
-//            .load(deps.as_ref().storage, (&Addr::unchecked("addr"), "2"))
-//            .unwrap();
-//        assert_eq!(spending, Spending::default());
+        //        let spending = SPENDINGS
+        //            .load(deps.as_ref().storage, (&Addr::unchecked("addr"), "2"))
+        //            .unwrap();
+        //        assert_eq!(spending, Spending::default());
 
         // Adding the authenticator with the same (account, authenticator_id) should fail
-    //    let request = OnAuthenticatorAddedRequest {
-    //        authenticator_id: "2".to_string(),
-    //        account: Addr::unchecked("addr"),
-    //        authenticator_params: Some(
-    //            to_json_binary(&CounterParams {
-    //                limit: Uint128::new(500_000_000),
-    //            })
-    //            .unwrap(),
-    //        ),
-    //    };
+        //    let request = OnAuthenticatorAddedRequest {
+        //        authenticator_id: "2".to_string(),
+        //        account: Addr::unchecked("addr"),
+        //        authenticator_params: Some(
+        //            to_json_binary(&CounterParams {
+        //                limit: Uint128::new(500_000_000),
+        //            })
+        //            .unwrap(),
+        //        ),
+        //    };
 
-    //    assert_eq!(
-    //        on_authenticator_added(deps.as_mut(), mock_env(), request).unwrap_err(),
-    //        AuthenticatorError::authenticator_already_exists(Addr::unchecked("addr"), "2")
-    //    );
+        //    assert_eq!(
+        //        on_authenticator_added(deps.as_mut(), mock_env(), request).unwrap_err(),
+        //        AuthenticatorError::authenticator_already_exists(Addr::unchecked("addr"), "2")
+        //    );
     }
 }

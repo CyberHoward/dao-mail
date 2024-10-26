@@ -5,7 +5,9 @@
 use std::path::PathBuf;
 
 use cosmwasm_std::to_json_binary;
-use osmosis_std::types::cosmwasm::wasm::v1::{MsgExecuteContractResponse, MsgInstantiateContractResponse};
+use osmosis_std::types::cosmwasm::wasm::v1::{
+    MsgExecuteContractResponse, MsgInstantiateContractResponse,
+};
 use osmosis_std::types::osmosis::smartaccount::v1beta1::{
     MsgAddAuthenticator, MsgAddAuthenticatorResponse,
 };
@@ -14,8 +16,8 @@ use serde::Serialize;
 
 use crate::{
     authenticator::{CosmwasmAuthenticatorData, SubAuthenticatorData},
-    msg::InstantiateMsg,
     counter::params::CounterParams,
+    msg::InstantiateMsg,
 };
 
 pub fn spend_limit_store_code(wasm: &Wasm<'_, OsmosisTestApp>, acc: &SigningAccount) -> u64 {
@@ -41,14 +43,7 @@ pub fn email_auth_instantiate(
     msg: &InstantiateMsg,
     acc: &SigningAccount,
 ) -> ExecuteResponse<MsgInstantiateContractResponse> {
-    wasm.instantiate(
-        code_id,
-        msg,
-        None,
-        Some("email_authenticator"),
-        &[],
-        acc,
-    )
+    wasm.instantiate(code_id, msg, None, Some("email_authenticator"), &[], acc)
         .unwrap()
 }
 
@@ -58,17 +53,10 @@ pub fn email_auth_instantiate_addr(
     msg: &InstantiateMsg,
     acc: &SigningAccount,
 ) -> String {
-    wasm.instantiate(
-        code_id,
-        msg,
-        None,
-        Some("email_authenticator"),
-        &[],
-        acc,
-    )
-    .unwrap()
-    .data
-    .address
+    wasm.instantiate(code_id, msg, None, Some("email_authenticator"), &[], acc)
+        .unwrap()
+        .data
+        .address
 }
 
 pub fn add_email_auth_authenticator(

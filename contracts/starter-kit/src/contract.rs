@@ -1,13 +1,11 @@
 use crate::authenticator::{self, CosmwasmAuthenticatorData};
-use crate::msg::{
-    CounterResponse, InstantiateMsg, QueryMsg, SudoMsg
-};
 use crate::counter::error::CounterError;
+use crate::msg::{CounterResponse, InstantiateMsg, QueryMsg, SudoMsg};
 use crate::state::COUNTERS;
 use crate::ContractError;
 #[cfg(not(feature = "library"))]
 use cosmwasm_std::entry_point;
-use cosmwasm_std::{Addr, Binary, Deps, DepsMut, Env, Response, to_json_binary, Uint128, Uint64};
+use cosmwasm_std::{to_json_binary, Addr, Binary, Deps, DepsMut, Env, Response, Uint128, Uint64};
 pub(crate) const CONTRACT_NAME: &str = "crates.io:dkim-auth";
 pub(crate) const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
 
@@ -51,38 +49,38 @@ pub fn query_counter(
         None => Err(CounterError::CounterNotFound {
             address: account,
             authenticator_id,
-        }.into()),
+        }
+        .into()),
     }
 }
 
 #[cfg(test)]
 mod tests {
     use cosmwasm_std::{
-        BlockInfo,
-        Coin, ContractResult, testing::{mock_env, mock_info}, to_json_vec, Uint128,
+        testing::{mock_env, mock_info},
+        to_json_vec, BlockInfo, Coin, ContractResult, Uint128,
     };
     use cw_authenticator::{
         Any, AuthenticationRequest, ConfirmExecutionRequest, OnAuthenticatorAddedRequest,
-        OnAuthenticatorRemovedRequest, SignatureData, SignModeTxData, TrackRequest, TxData,
+        OnAuthenticatorRemovedRequest, SignModeTxData, SignatureData, TrackRequest, TxData,
     };
     use osmosis_std::types::{
         cosmos::bank::v1beta1::MsgSend,
         osmosis::smartaccount::v1beta1::{AccountAuthenticator, GetAuthenticatorResponse},
     };
 
-    use crate::{
-        authenticator::CosmwasmAuthenticatorData,
-        test_helper::mock_stargate_querier::{
-            get_authenticator_query_handler,
-            mock_dependencies_with_stargate_querier,
-        },
-    };
+    use super::*;
     use crate::counter::params::CounterParams;
     use crate::dkim::DomainAuthConfig;
     use crate::handlers::instantiate::instantiate;
     use crate::handlers::query::query;
     use crate::test_helper::constants::{ABSTRACT_DKIM_PUBLIC_KEY, ABSTRACT_DOMAIN};
-    use super::*;
+    use crate::{
+        authenticator::CosmwasmAuthenticatorData,
+        test_helper::mock_stargate_querier::{
+            get_authenticator_query_handler, mock_dependencies_with_stargate_querier,
+        },
+    };
 
     const UUSDC: &str = "ibc/498A0751C798A0D9A389AA3691123DADA57DAA4FE165D5C75894505B876BA6E4";
 
@@ -228,18 +226,18 @@ mod tests {
         .unwrap();
 
         // query spending
-       // let count = from_json::<CounterResponse>(
-       //     &query(
-       //         deps.as_ref(),
-       //         mock_env(),
-       //         QueryMsg::Counter {
-       //             account: "limited_account".to_string(),
-       //             authenticator_id: "2".to_string(),
-       //         },
-       //     )
-       //     .unwrap(),
-       // )
-       // .unwrap();
+        // let count = from_json::<CounterResponse>(
+        //     &query(
+        //         deps.as_ref(),
+        //         mock_env(),
+        //         QueryMsg::Counter {
+        //             account: "limited_account".to_string(),
+        //             authenticator_id: "2".to_string(),
+        //         },
+        //     )
+        //     .unwrap(),
+        // )
+        // .unwrap();
 
         //assert_eq!(
         //    count,
@@ -271,28 +269,28 @@ mod tests {
         )
         .unwrap_err();
 
-       // assert_eq!(
-       //     err,
-       //     CounterError::CounterNotFound {
-       //         address: Addr::unchecked("limited_account"),
-       //         authenticator_id: "2".to_string(),
-       //     }
-       //     .into()
-       // );
+        // assert_eq!(
+        //     err,
+        //     CounterError::CounterNotFound {
+        //         address: Addr::unchecked("limited_account"),
+        //         authenticator_id: "2".to_string(),
+        //     }
+        //     .into()
+        // );
 
-  //      // query spendings by account
-  //      let spendings = from_json::<SpendingsByAccountResponse>(
-  //          &query(
-  //              deps.as_ref(),
-  //              mock_env(),
-  //              QueryMsg::SpendingsByAccount {
-  //                  account: "limited_account".to_string(),
-  //              },
-  //          )
-  //          .unwrap(),
-  //      )
-  //      .unwrap();
-  //      assert_eq!(spendings, SpendingsByAccountResponse { spendings: vec![] });
+        //      // query spendings by account
+        //      let spendings = from_json::<SpendingsByAccountResponse>(
+        //          &query(
+        //              deps.as_ref(),
+        //              mock_env(),
+        //              QueryMsg::SpendingsByAccount {
+        //                  account: "limited_account".to_string(),
+        //              },
+        //          )
+        //          .unwrap(),
+        //      )
+        //      .unwrap();
+        //      assert_eq!(spendings, SpendingsByAccountResponse { spendings: vec![] });
     }
 
     fn mock_env_with_additional_days(days: u64) -> Env {

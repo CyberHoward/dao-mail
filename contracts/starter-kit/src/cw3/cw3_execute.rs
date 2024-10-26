@@ -16,9 +16,9 @@ use cw4::{Cw4Contract, MemberChangedHookMsg, MemberDiff};
 use cw_storage_plus::Bound;
 use cw_utils::{maybe_addr, Expiration, ThresholdResponse};
 
+use crate::cw3::cw3_state::{Config, CONFIG};
 use crate::error::ContractError;
 use crate::msg::{ExecuteMsg, InstantiateMsg, QueryMsg};
-use crate::cw3::cw3_state::{Config, CONFIG};
 
 pub fn execute_propose(
     deps: DepsMut,

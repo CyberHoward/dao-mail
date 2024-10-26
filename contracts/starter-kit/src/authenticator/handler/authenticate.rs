@@ -23,20 +23,17 @@ pub fn authenticate(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::counter::params::CounterParams;
     use cosmwasm_std::{
         testing::{mock_dependencies_with_balances, mock_env},
         to_json_binary, Addr, Binary, Timestamp,
     };
     use cw_authenticator::{Any, SignModeTxData, SignatureData, TxData};
     use rstest::rstest;
-    use crate::counter::params::CounterParams;
 
     #[rstest]
     #[case::no_time_limit(0, true)]
-    fn test_authenticate_time_limit(
-        #[case] current: u64,
-        #[case] expected: bool,
-    ) {
+    fn test_authenticate_time_limit(#[case] current: u64, #[case] expected: bool) {
         // Setup the environment
         let mut deps = mock_dependencies_with_balances(&[("addr", &[])]);
 

@@ -1,23 +1,23 @@
-use ring::signature::{UnparsedPublicKey, RSA_PKCS1_2048_8192_SHA256};
 use base64;
-use pem;
 use dkim;
+use pem;
+use ring::signature::{UnparsedPublicKey, RSA_PKCS1_2048_8192_SHA256};
 
 // Correctly ordered and canonicalized headers to sign based on `h=` tag
 const HEADERS_TO_SIGN: &str = concat!(
-"to: adair@abstract.money\n",
-"subject: test\n",
-"message-id: <CAN9aTKL3tmj3jS1JWqmcTdSvk91h+ccwjORR6d=TzkLh0aH2jQ@mail.gmail.com>\n",
-"date: Sat, 26 Oct 2024 20:40:23 +0400\n",
-"from: dao account <dao@abstract.money>\n",
-"mime-version: 1.0\n",
-"from: dao account <dao@abstract.money>\n",
-"to: adair@abstract.money\n",
-"cc: \n", // Assuming no cc header; adjust if actual content exists
-"subject: test\n",
-"date: Sat, 26 Oct 2024 20:40:23 +0400\n",
-"message-id: <CAN9aTKL3tmj3jS1JWqmcTdSvk91h+ccwjORR6d=TzkLh0aH2jQ@mail.gmail.com>\n",
-"reply-to: \n" // Assuming no reply-to header; adjust if actual content exists
+    "to: adair@abstract.money\n",
+    "subject: test\n",
+    "message-id: <CAN9aTKL3tmj3jS1JWqmcTdSvk91h+ccwjORR6d=TzkLh0aH2jQ@mail.gmail.com>\n",
+    "date: Sat, 26 Oct 2024 20:40:23 +0400\n",
+    "from: dao account <dao@abstract.money>\n",
+    "mime-version: 1.0\n",
+    "from: dao account <dao@abstract.money>\n",
+    "to: adair@abstract.money\n",
+    "cc: \n", // Assuming no cc header; adjust if actual content exists
+    "subject: test\n",
+    "date: Sat, 26 Oct 2024 20:40:23 +0400\n",
+    "message-id: <CAN9aTKL3tmj3jS1JWqmcTdSvk91h+ccwjORR6d=TzkLh0aH2jQ@mail.gmail.com>\n",
+    "reply-to: \n" // Assuming no reply-to header; adjust if actual content exists
 );
 
 // DKIM signature from `b=` tag in `DKIM-Signature` header
