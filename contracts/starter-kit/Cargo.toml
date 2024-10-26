@@ -1,11 +1,22 @@
 [package]
 edition = "2021"
-name = "authenticator-starter-kit"
+name = "dkim-auth"
 version = "1.0.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [lib]
 crate-type = ["cdylib", "rlib"]
+
+[[bin]]
+name = "deploy"
+#path = "bin/deploy.rs"
+required-features = ["deploy"]
+
+[features]
+# use library feature to disable all instantiate/execute/query exports
+library = []
+deploy = ["cw-orch/daemon", "dotenv", "env_logger"]
+
 
 [dependencies]
 cosmwasm-schema = "1.3.1"
@@ -22,6 +33,11 @@ serde = "1.0.180"
 thiserror = { version = "1.0.23" }
 time = { version = "0.3.31", features = ["macros"] }
 
+# Testing / deployment
+cw-orch = { version = "0.26.0" }
+env_logger = { version = "0.11.5", optional = true }
+dotenv = { version = "0.15.0", optional = true }
+
 [package.metadata.scripts]
 optimize = """docker run --rm -v "$(pwd)":/code \
   --mount type=volume,source="$(basename "$(pwd)")_cache",target=/code/target \
@@ -31,6 +47,8 @@ optimize = """docker run --rm -v "$(pwd)":/code \
 
 [dev-dependencies]
 mock-cosmwasm-contract = "0.1.2"
-osmosis-test-tube = "25.0.0"
+osmosis-test-tube = "26.0.0"
 # osmosis-test-tube = { path = "../../../test-tube/packages/osmosis-test-tube" }
 rstest = "0.18.2"
+
+cw-multi-test = "2.0.0"

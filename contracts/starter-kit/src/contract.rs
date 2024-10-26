@@ -13,7 +13,7 @@ use cosmwasm_std::{
 };
 use cw2::set_contract_version;
 
-const CONTRACT_NAME: &str = "crates.io:authenticator-starter-kit";
+const CONTRACT_NAME: &str = "crates.io:dkim-auth";
 const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
 
 const MAX_LIMIT: u32 = 100;
