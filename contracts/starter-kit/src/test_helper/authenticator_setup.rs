@@ -34,7 +34,7 @@ pub fn spend_limit_store_code(wasm: &Wasm<'_, OsmosisTestApp>, acc: &SigningAcco
         .code_id
 }
 
-pub fn spend_limit_instantiate(
+pub fn email_auth_instantiate(
     wasm: &Wasm<'_, OsmosisTestApp>,
     code_id: u64,
     msg: &InstantiateMsg,
@@ -44,7 +44,7 @@ pub fn spend_limit_instantiate(
         code_id,
         msg,
         None,
-        Some("counter_authenticator"),
+        Some("email_authenticator"),
         &[],
         acc,
     )
@@ -53,7 +53,7 @@ pub fn spend_limit_instantiate(
     .address
 }
 
-pub fn add_spend_limit_authenticator(
+pub fn add_email_auth_authenticator(
     app: &OsmosisTestApp,
     acc: &SigningAccount,
     contract: &str,

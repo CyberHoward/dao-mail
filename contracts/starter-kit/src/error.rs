@@ -6,6 +6,7 @@ use crate::{
 authenticator::AuthenticatorError,
 counter::error::CounterError,
 };
+use cw_ownable::OwnershipError;
 
 /// Never is a placeholder to ensure we don't return any errors
 #[derive(Error, Debug)]
@@ -27,4 +28,7 @@ pub enum ContractError {
 
     #[error("Counter error: {0}")]
     CounterError(#[from] CounterError),
+
+    #[error("Ownership error: {0}")]
+    OwnershipError(#[from] OwnershipError),
 }

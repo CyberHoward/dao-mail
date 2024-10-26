@@ -1,42 +1,54 @@
-use crate::authenticator::{self};
+use crate::authenticator::{self, CosmwasmAuthenticatorData};
 use crate::msg::{
-    InstantiateMsg, ExecuteMsg, QueryMsg, SudoMsg, CounterResponse
+    CounterResponse, ExecuteMsg, InstantiateMsg, QueryMsg, SudoMsg
 };
 use crate::counter::error::CounterError;
-use crate::state::COUNTERS;
+use crate::state::{COUNT_TEST, COUNTERS};
 use crate::ContractError;
 #[cfg(not(feature = "library"))]
 use cosmwasm_std::entry_point;
-use cosmwasm_std::{
-    to_json_binary, Addr, Binary, Deps, DepsMut, Env, MessageInfo, 
-    Timestamp, Response, Uint64,
-};
-use cw2::set_contract_version;
+use cosmwasm_std::{Addr, Binary, Deps, DepsMut, Env, MessageInfo, Response, to_json_binary, Uint128, Uint64};
+use osmosis_std::types::osmosis::smartaccount::v1beta1::MsgAddAuthenticator;
 
-const CONTRACT_NAME: &str = "crates.io:dkim-auth";
-const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
+pub(crate) const CONTRACT_NAME: &str = "crates.io:dkim-auth";
+pub(crate) const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
 
 const MAX_LIMIT: u32 = 100;
 
 #[cfg_attr(not(feature = "library"), entry_point)]
-pub fn instantiate(
-    deps: DepsMut,
-    _env: Env,
-    _info: MessageInfo,
-    _msg: InstantiateMsg,
-) -> Result<Response, ContractError> {
-    set_contract_version(deps.storage, CONTRACT_NAME, CONTRACT_VERSION)?;
-
-    Ok(Response::new().add_attribute("action", "instantiate"))
-}
-
-#[cfg_attr(not(feature = "library"), entry_point)]
 pub fn execute(
-    _deps: DepsMut,
-    _env: Env,
-    _info: MessageInfo,
-    _msg: ExecuteMsg,
+    deps: DepsMut,
+    env: Env,
+    info: MessageInfo,
+    msg: ExecuteMsg,
 ) -> Result<Response, ContractError> {
+    match msg {
+        ExecuteMsg::UpdateOwnership(action) => {
+            cw_ownable::update_ownership(deps, &env.block, &info.sender, action)?;
+        }
+        ExecuteMsg::Count {} => {
+            COUNT_TEST.update(deps.storage, |count| -> Result<_, ContractError> {
+                Ok(count + 1)
+            })?;
+        }
+        ExecuteMsg::Execute { msgs } => {
+            return Ok(Response::new().add_messages(msgs))
+        },
+        ExecuteMsg::Setup { params } => {
+            let auth_data = CosmwasmAuthenticatorData {
+                contract: env.contract.address.to_string(),
+                params: to_json_binary(&params).unwrap().to_vec(),
+            };
+
+            let add_auth_msg = MsgAddAuthenticator {
+                sender: env.contract.address.to_string(),
+                r#type: "CosmwasmAuthenticatorV1".to_string(),
+                data: to_json_binary(&auth_data).unwrap().to_vec(),
+            };
+
+            return Ok(Response::new().add_message(add_auth_msg))
+        }
+    }
     Ok(Response::new().add_attribute("action", "excute"))
 }
 
@@ -102,15 +114,13 @@ pub fn query_counter(
 
 #[cfg(test)]
 mod tests {
-    use authenticator::SubAuthenticatorData;
     use cosmwasm_std::{
-        from_json,
-        testing::{mock_dependencies, mock_dependencies_with_balances, mock_env, mock_info},
-        to_json_vec, BlockInfo, Coin, ContractResult, Uint128, Uint64,
+        BlockInfo,
+        Coin, ContractResult, testing::{mock_env, mock_info}, to_json_vec, Uint128,
     };
     use cw_authenticator::{
         Any, AuthenticationRequest, ConfirmExecutionRequest, OnAuthenticatorAddedRequest,
-        OnAuthenticatorRemovedRequest, SignModeTxData, SignatureData, TrackRequest, TxData,
+        OnAuthenticatorRemovedRequest, SignatureData, SignModeTxData, TrackRequest, TxData,
     };
     use osmosis_std::types::{
         cosmos::bank::v1beta1::MsgSend,
@@ -125,7 +135,7 @@ mod tests {
         },
     };
     use crate::counter::params::CounterParams;
-
+    use crate::handlers::instantiate::instantiate;
     use super::*;
 
     const UUSDC: &str = "ibc/498A0751C798A0D9A389AA3691123DADA57DAA4FE165D5C75894505B876BA6E4";
@@ -162,7 +172,9 @@ mod tests {
                 }
             })),
         );
-        let msg = InstantiateMsg {};
+        let msg = InstantiateMsg {
+            // params: params.clone(),
+        };
         let info = mock_info("creator", &[]);
         instantiate(deps.as_mut(), mock_env(), info, msg).unwrap();
 

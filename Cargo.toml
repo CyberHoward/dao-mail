@@ -1,6 +1,7 @@
 [workspace]
 members = [
-  'contracts/*',
+  'contracts/starter-kit',
+#  'contracts/*',
 ]
 resolver = "2"
 

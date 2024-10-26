@@ -2,7 +2,8 @@
 // and also, tarpaulin will not be able to read coverage out of wasm binary anyway
 #![cfg(all(test, not(tarpaulin)))]
 
-use cosmwasm_std::{Coin, Timestamp, Uint128};
+use cosmwasm_std::{Coin, Timestamp, Uint128, wasm_execute};
+use osmosis_std::types::cosmwasm::wasm::v1::MsgExecuteContractResponse;
 use osmosis_std::types::osmosis::smartaccount;
 // XXX: Leaving commented here for an example
 // use osmosis_std::types::osmosis::poolmanager::v1beta1::{
@@ -14,11 +15,7 @@ use osmosis_std::types::osmosis::smartaccount;
 //    smartaccount::v1beta1::{MsgRemoveAuthenticator, MsgRemoveAuthenticatorResponse},
 //};
 // use osmosis_test_tube::osmosis_std::types::cosmos::bank::v1beta1::QueryBalanceRequest;
-use osmosis_test_tube::{
-    cosmrs::proto::tendermint::v0_37::abci::ResponseDeliverTx,
-    osmosis_std::types::cosmos::bank::v1beta1::MsgSend, Account, FeeSetting, Module,
-    OsmosisTestApp, RunnerExecuteResult, SigningAccount, Wasm,
-};
+use osmosis_test_tube::{cosmrs::proto::tendermint::v0_37::abci::ResponseDeliverTx, osmosis_std::types::cosmos::bank::v1beta1::MsgSend, Account, FeeSetting, Module, OsmosisTestApp, RunnerExecuteResult, SigningAccount, Wasm, Runner, ExecuteResponse};
 
 // use crate::ContractError;
 use crate::{
@@ -26,10 +23,10 @@ use crate::{
     msg::{InstantiateMsg, QueryMsg, CounterResponse},
     test_helper::authenticator_setup::{
         //add_1ct_session_authenticator, add_all_of_sig_ver_spend_limit_authenticator,
-        add_spend_limit_authenticator, spend_limit_instantiate, spend_limit_store_code,
+        add_email_auth_authenticator, email_auth_instantiate, spend_limit_store_code,
     },
 };
-
+use crate::msg::ExecuteMsg;
 //const UUSDC: &str = "ibc/498A0751C798A0D9A389AA3691123DADA57DAA4FE165D5C75894505B876BA6E4";
 //const UATOM: &str = "ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2";
 
@@ -47,25 +44,34 @@ fn test_happy_path_integration() {
 
     let wasm = Wasm::new(&app);
 
+    let params = CounterParams {
+        limit: Uint128::new(1_500_000),
+    };
+
     // Store code and initialize spend limit contract
     let code_id = spend_limit_store_code(&wasm, &acc_1);
-    let contract_addr = spend_limit_instantiate(
+    let contract_addr = email_auth_instantiate(
         &wasm,
         code_id,
-        &InstantiateMsg {},
+        &InstantiateMsg {
+            // params: params.clone()
+        },
         &acc_1,
     );
+
+    app.execute_cosmos_msgs::<MsgExecuteContractResponse>(&[wasm_execute(contract_addr.clone(), &ExecuteMsg::Setup {
+        params: params.clone()
+    }, vec![]).unwrap().into()], &acc_1).unwrap();
 
 //    let spend_limit_querier = SpendLimitQuerier::new(&app, contract_addr.to_string());
 
     // Add spend limit authenticator
-    let spend_limit_auth_id = add_spend_limit_authenticator(
+
+    let spend_limit_auth_id = add_email_auth_authenticator(
         &app,
         &acc_1,
         &contract_addr,
-        &CounterParams {
-            limit: Uint128::new(1_500_000),
-        },
+        &params,
     );
 
     let acc_1_custom_fee = acc_1.with_fee_setting(FeeSetting::Custom {

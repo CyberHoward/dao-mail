@@ -16,6 +16,6 @@ mod test_helper;
 pub use crate::error::ContractError;
 
 pub mod helpers;
-
+mod handlers;
 // #[cfg(not(target_arch = "wasm32"))]
 // pub mod interface;
