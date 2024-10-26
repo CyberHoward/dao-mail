@@ -33,6 +33,7 @@ mod tests {
         to_json_binary, Addr, Binary, Coin, Uint128,
     };
     use cw_authenticator::TrackRequest;
+    use crate::msg::EmailAuthDetails;
 
     #[test]
     fn test_track_success() {
@@ -47,6 +48,7 @@ mod tests {
             authenticator_params: Some(
                 to_json_binary(&EmailAuthParams {
                     limit: Uint128::new(500_000_000),
+                    auth: EmailAuthDetails::mock()
                 })
                 .unwrap(),
             ),

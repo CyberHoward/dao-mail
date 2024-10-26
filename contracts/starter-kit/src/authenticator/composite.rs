@@ -163,6 +163,7 @@ mod tests {
     use crate::counter::params::EmailAuthParams;
     use cosmwasm_std::to_json_vec;
     use rstest::rstest;
+    use crate::msg::EmailAuthDetails;
 
     #[rstest]
     #[case("1", Ok(CompositeId { root: 1, path: vec![] }))]
@@ -198,6 +199,7 @@ mod tests {
     fn test_child_authenticator_data() {
         let params = EmailAuthParams {
             limit: 1000000u128.into(),
+            auth: EmailAuthDetails::mock()
         };
         // no depth
         let target_data = CosmwasmAuthenticatorData {

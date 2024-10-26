@@ -24,8 +24,8 @@ use osmosis_test_tube::{
 };
 
 // use crate::ContractError;
-use crate::dkim::DomainAuthConfig;
-use crate::msg::ExecuteMsg;
+use crate::dkim::DkimAuthConfig;
+use crate::msg::{EmailAuthDetails, ExecuteMsg};
 use crate::test_helper::constants::{ABSTRACT_DKIM_PUBLIC_KEY, ABSTRACT_DOMAIN, TEST_EMAIL_1, TEST_EMAIL_2};
 use crate::{
     counter::params::EmailAuthParams,
@@ -56,6 +56,7 @@ fn test_happy_path_integration() {
 
     let params = EmailAuthParams {
         limit: Uint128::new(1_500_000),
+        auth: EmailAuthDetails::mock()
     };
 
     // Store code and initialize spend limit contract
@@ -72,7 +73,7 @@ fn test_happy_path_integration() {
         &wasm,
         code_id,
         &InstantiateMsg {
-            domain_auth: DomainAuthConfig {
+            domain_auth: DkimAuthConfig {
                 domain: ABSTRACT_DOMAIN.to_string(),
                 dkim_pk: ABSTRACT_DKIM_PUBLIC_KEY.to_string(),
             },

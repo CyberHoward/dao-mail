@@ -28,7 +28,7 @@ mod tests {
     };
     use cw_authenticator::ConfirmExecutionRequest;
     use rstest::rstest;
-
+    use crate::msg::EmailAuthDetails;
     use super::*;
 
     #[rstest]
@@ -62,6 +62,7 @@ mod tests {
             authenticator_params: Some(
                 to_json_binary(&EmailAuthParams {
                     limit: Uint128::new(limit),
+                    auth: EmailAuthDetails::mock()
                 })
                 .unwrap(),
             ),

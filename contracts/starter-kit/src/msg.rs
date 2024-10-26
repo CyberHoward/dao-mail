@@ -3,9 +3,11 @@ use cosmwasm_std::{CosmosMsg, Empty, StdResult, Uint64};
 use cw3::Vote;
 // re-export the structs from cw_authenticator
 use crate::counter::params::EmailAuthParams;
-use crate::dkim::DomainAuthConfig;
+use crate::dkim::DkimAuthConfig;
 pub use cw_authenticator::AuthenticatorSudoMsg as SudoMsg;
 use cw_ownable::cw_ownable_execute;
+use crate::authenticator::AuthenticatorError;
+use crate::ContractError;
 
 pub type EmailAddress = String;
 
@@ -13,10 +15,11 @@ pub type EmailAddress = String;
 #[cw_serde]
 pub struct InstantiateMsg {
     pub params: EmailAuthParams,
-    pub domain_auth: DomainAuthConfig,
+    pub domain_auth: DkimAuthConfig,
     pub member_emails: Vec<EmailAddress>
 }
 
+/// Key authentication information from the email to be able to verify that the sender is part of our domain.
 #[cw_serde]
 pub struct EmailAuthDetails {
     pub headers: String,
@@ -24,10 +27,21 @@ pub struct EmailAuthDetails {
 }
 
 impl EmailAuthDetails {
-    pub fn get_sender(&self) -> StdResult<EmailAddress> {
-        // TODO: parse real sender from headers
-        return Ok("test@abstract.money".to_string())
+pub fn get_sender(&self) -> Result<EmailAddress, AuthenticatorError> {
+    let message = mail_parser::MessageParser::default()
+        .parse(&self.headers.clone());
+
+    message.ok_or(|_| Err(AuthenticatorError::FailedToParseHeaders(self.headers.clone())))?;
+
+    // TODO HACKATHON: fix this thing
+    if let Some(from) = message.from() {
+        from.first().ok_or(AuthenticatorError::NoSenderFound(self.headers.clone()))?
+    } else {
+        return Err(AuthenticatorError::NoSenderFound(self.headers.clone()));
     }
+
+    Ok("test@abstract.money".to_string())
+}
 }
 
 #[cw_ownable_execute]

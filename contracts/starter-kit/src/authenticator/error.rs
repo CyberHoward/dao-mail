@@ -1,6 +1,7 @@
 use cosmwasm_std::{Addr, StdError};
+use cw_utils::PaymentError;
 use thiserror::Error;
-
+use crate::ContractError;
 use super::composite::CompositeAuthenticatorError;
 
 #[derive(Error, Debug, PartialEq)]
@@ -25,6 +26,16 @@ pub enum AuthenticatorError {
         account: Addr,
         authenticator_id: String,
     },
+
+
+    #[error("Failed to parse headers: {0}")]
+    FailedToParseHeaders(String),
+
+    #[error("No sender found in headers: {0}")]
+    NoSenderFound(String),
+
+    #[error("Multiple senders found in headers: {0}")]
+    MultipleSendersFound(String),
 }
 
 impl AuthenticatorError {

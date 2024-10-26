@@ -44,6 +44,7 @@ base64 = "0.22.1"
 pem = "1.0.2" # for parsing PEM-formatted public keys
 rsa = "0.8.0"
 sha2 = "0.10.6"
+mail-parser = "0.9.4"
 
 # Testing / deployment
 cw-orch = { version = "0.26.0" }

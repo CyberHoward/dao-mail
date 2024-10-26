@@ -1,23 +1,41 @@
-use cosmwasm_std::{DepsMut, Env, Response};
+use cosmwasm_std::{DepsMut, Env, Order, Response};
 use cw_authenticator::AuthenticationRequest;
 
 use crate::ContractError;
-
+use crate::counter::params::EmailAuthParams;
+use crate::msg::EmailAuthDetails;
+use crate::state::{DOMAIN, DKIM_AUTH_CONFIG, EMAILS};
 use super::validate_and_parse_params;
 
 pub fn authenticate(
-    _deps: DepsMut,
+    deps: DepsMut,
     _env: Env,
     auth_request: AuthenticationRequest,
 ) -> Result<Response, ContractError> {
-    let _ = validate_and_parse_params(auth_request.authenticator_params)?;
+    let EmailAuthParams {
+        auth: email_auth,
+        ..
+    } = validate_and_parse_params(auth_request.authenticator_params)?;
 
     let _ = (
         &auth_request.account,
         auth_request.authenticator_id.as_str(),
     );
 
-    Ok(Response::new().add_attribute("action", "authenticate"))
+    // First, verify that the sender is authorized on the domain
+    let dkim_auth_config = DKIM_AUTH_CONFIG.load(deps.storage)?;
+    dkim_auth_config.verify_email_auth(&email_auth)?;
+
+    // Next, verify that the sender is a member
+    let sender_email = email_auth.get_sender()?;
+    EMAILS.load(deps.storage, &sender_email).map_err(|_| ContractError::NotMember {
+        members: EMAILS.range(deps.storage, None, None, Order::Ascending).map(|x| x.unwrap().0).collect::<Vec<_>>().join(","),
+        sender: sender_email.clone()
+    })?;
+
+    // TODO HACKATHON: Finally, verify that the member is performing an authorized action...
+
+    Ok(Response::new().add_attribute("action", "authenticate").add_attribute("sender", &sender_email))
 }
 
 #[cfg(test)]
@@ -48,6 +66,7 @@ mod tests {
             authenticator_params: Some(
                 to_json_binary(&EmailAuthParams {
                     limit: 1000u128.into(),
+                    auth: EmailAuthDetails::mock(),
                 })
                 .unwrap(),
             ),

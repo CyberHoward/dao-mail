@@ -13,6 +13,8 @@ pub fn on_authenticator_removed(
 ) -> Result<Response, AuthenticatorError> {
     let _ = validate_and_parse_params(authenticator_params)?;
 
+    // TODO HACKATHON: implement removed logic...
+
     Ok(Response::new().add_attribute("action", "on_authenticator_removed"))
 }
 
@@ -23,7 +25,7 @@ mod tests {
         testing::{mock_dependencies, mock_env},
         to_json_binary, Addr,
     };
-
+    use crate::msg::EmailAuthDetails;
     use super::*;
 
     #[test]
@@ -43,6 +45,7 @@ mod tests {
             authenticator_params: Some(
                 to_json_binary(&EmailAuthParams {
                     limit: 1000u128.into(),
+                    auth: EmailAuthDetails::mock(),
                 })
                 .unwrap(),
             ),

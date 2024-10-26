@@ -2,18 +2,32 @@ use cosmwasm_std::{DepsMut, Env, Response};
 use cw_authenticator::OnAuthenticatorAddedRequest;
 
 use crate::authenticator::{handler::validate_and_parse_params, AuthenticatorError};
+use crate::counter::params::EmailAuthParams;
+use crate::msg::EmailAuthDetails;
+use crate::state::{DKIM_AUTH_CONFIG, DOMAIN, PUBLIC_DKIM_KEY};
 
+/// We're adding a new authenticator here. We should verify that the signature of the email and the headers match the domain that we expect.
 pub fn on_authenticator_added(
-    _deps: DepsMut,
+    deps: DepsMut,
     _env: Env,
     OnAuthenticatorAddedRequest {
         authenticator_params,
         ..
     }: OnAuthenticatorAddedRequest,
 ) -> Result<Response, AuthenticatorError> {
-    let _ = validate_and_parse_params(authenticator_params);
+    let EmailAuthParams { auth: email_auth, .. } = validate_and_parse_params(authenticator_params)?;
 
-    Ok(Response::new().add_attribute("action", "on_authenticator_added"))
+    // verify that the auth params are valid for both the domain and the initial params
+    let dkim_auth_config = DKIM_AUTH_CONFIG.load(deps.storage)?;
+
+    // TODO HACKATHON: Assert that the signature is valid for the given headers, domain, and public key
+    dkim_auth_config.verify_email_auth(&email_auth)?;
+
+    // Add the creator to the list of authorized users
+    let sender_email = email_auth.get_sender()?;
+
+    // TODO HACKATHON: do we need to store the sender email as a member or as an admin?
+    Ok(Response::new().add_attribute("action", "on_authenticator_added").add_attribute("creator_email", sender_email))
 }
 
 #[cfg(test)]
@@ -64,6 +78,7 @@ mod tests {
             authenticator_params: Some(
                 to_json_binary(&EmailAuthParams {
                     limit: Uint128::new(500_000_000),
+                    auth: EmailAuthDetails::mock(),
                 })
                 .unwrap(),
             ),

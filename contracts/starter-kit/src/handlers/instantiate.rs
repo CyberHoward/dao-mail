@@ -20,7 +20,7 @@ pub fn instantiate(
     cw_ownable::initialize_owner(deps.storage, deps.api, Some(info.sender.as_str()))?;
 
     // verify the domain public keys
-    msg.domain_auth.verify()?;
+    msg.domain_auth.verify_self()?;
     msg.domain_auth.save(deps.storage)?;
 
     setup_mulitsig(deps, &msg)?;

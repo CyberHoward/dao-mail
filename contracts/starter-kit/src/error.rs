@@ -69,4 +69,7 @@ pub enum ContractError {
 
     #[error("No voters")]
     NoVoters {},
+
+    #[error("Sender {sender} is not a member of {members}")]
+    NotMember { sender: String, members: String },
 }
