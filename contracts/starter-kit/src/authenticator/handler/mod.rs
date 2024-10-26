@@ -8,13 +8,13 @@ pub mod on_authenticator_added;
 pub mod on_authenticator_removed;
 pub mod track;
 
-use crate::counter::params::CounterParams;
+use crate::counter::params::EmailAuthParams;
 
 /// Validate and parse the authenticator_params
 /// Returns an error if the authenticator_params are missing or invalid
 fn validate_and_parse_params(
     authenticator_params: Option<Binary>,
-) -> Result<CounterParams, AuthenticatorError> {
+) -> Result<EmailAuthParams, AuthenticatorError> {
     // Make sure the authenticator_params are present
     let authenticator_params =
         authenticator_params.ok_or(AuthenticatorError::MissingAuthenticatorParams)?;

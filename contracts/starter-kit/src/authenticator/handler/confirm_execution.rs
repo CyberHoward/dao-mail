@@ -1,7 +1,7 @@
 use cosmwasm_std::{DepsMut, Env, Response};
 use cw_authenticator::ConfirmExecutionRequest;
 
-use crate::counter::params::CounterParams;
+use crate::counter::params::EmailAuthParams;
 // use crate::state::COUNTERS;
 use crate::ContractError;
 
@@ -15,7 +15,7 @@ pub fn confirm_execution(
         ..
     }: ConfirmExecutionRequest,
 ) -> Result<Response, ContractError> {
-    let _params: CounterParams = validate_and_parse_params(authenticator_params)?;
+    let _params: EmailAuthParams = validate_and_parse_params(authenticator_params)?;
 
     Ok(Response::new())
 }
@@ -60,7 +60,7 @@ mod tests {
             fee_granter: None,
             fee: vec![],
             authenticator_params: Some(
-                to_json_binary(&CounterParams {
+                to_json_binary(&EmailAuthParams {
                     limit: Uint128::new(limit),
                 })
                 .unwrap(),

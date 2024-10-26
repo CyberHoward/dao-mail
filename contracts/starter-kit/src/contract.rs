@@ -70,11 +70,11 @@ mod tests {
     };
 
     use super::*;
-    use crate::counter::params::CounterParams;
+    use crate::counter::params::EmailAuthParams;
     use crate::dkim::DomainAuthConfig;
     use crate::handlers::instantiate::instantiate;
     use crate::handlers::query::query;
-    use crate::test_helper::constants::{ABSTRACT_DKIM_PUBLIC_KEY, ABSTRACT_DOMAIN};
+    use crate::test_helper::constants::{ABSTRACT_DKIM_PUBLIC_KEY, ABSTRACT_DOMAIN, TEST_EMAIL_1, TEST_EMAIL_2};
     use crate::{
         authenticator::CosmwasmAuthenticatorData,
         test_helper::mock_stargate_querier::{
@@ -86,7 +86,7 @@ mod tests {
 
     #[test]
     fn test_happy_path() {
-        let params = CounterParams {
+        let params = EmailAuthParams {
             limit: Uint128::from(1_000_000u128),
         };
 
@@ -117,11 +117,12 @@ mod tests {
             })),
         );
         let msg = InstantiateMsg {
-            auth: DomainAuthConfig {
+            domain_auth: DomainAuthConfig {
                 domain: ABSTRACT_DOMAIN.to_string(),
                 dkim_pk: ABSTRACT_DKIM_PUBLIC_KEY.to_string(),
             },
             params: params.clone(),
+            member_emails: vec![TEST_EMAIL_1.into(), TEST_EMAIL_2.into()]
         };
         let info = mock_info("creator", &[]);
         instantiate(deps.as_mut(), mock_env(), info, msg).unwrap();

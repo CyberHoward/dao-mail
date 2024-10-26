@@ -16,7 +16,7 @@ use serde::Serialize;
 
 use crate::{
     authenticator::{CosmwasmAuthenticatorData, SubAuthenticatorData},
-    counter::params::CounterParams,
+    counter::params::EmailAuthParams,
     msg::InstantiateMsg,
 };
 
@@ -63,7 +63,7 @@ pub fn add_email_auth_authenticator(
     app: &OsmosisTestApp,
     acc: &SigningAccount,
     contract: &str,
-    params: &CounterParams,
+    params: &EmailAuthParams,
 ) -> u64 {
     add_authenticator(
         app,
@@ -80,7 +80,7 @@ pub fn add_all_of_sig_ver_spend_limit_authenticator(
     app: &OsmosisTestApp,
     acc: &SigningAccount,
     contract: &str,
-    params: &CounterParams,
+    params: &EmailAuthParams,
 ) -> u64 {
     add_authenticator(
         app,
@@ -117,7 +117,7 @@ pub fn add_1ct_session_authenticator(
     acc: &SigningAccount,
     session_pubkey: &[u8],
     spend_limit_contract: &str,
-    params: &CounterParams,
+    params: &EmailAuthParams,
 ) -> u64 {
     add_authenticator(
         app,

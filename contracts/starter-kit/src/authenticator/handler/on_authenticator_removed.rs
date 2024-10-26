@@ -18,7 +18,7 @@ pub fn on_authenticator_removed(
 
 #[cfg(test)]
 mod tests {
-    use crate::counter::params::CounterParams;
+    use crate::counter::params::EmailAuthParams;
     use cosmwasm_std::{
         testing::{mock_dependencies, mock_env},
         to_json_binary, Addr,
@@ -41,7 +41,7 @@ mod tests {
             authenticator_id: "2".to_string(),
             account: Addr::unchecked("account"),
             authenticator_params: Some(
-                to_json_binary(&CounterParams {
+                to_json_binary(&EmailAuthParams {
                     limit: 1000u128.into(),
                 })
                 .unwrap(),

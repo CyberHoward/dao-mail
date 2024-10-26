@@ -14,7 +14,7 @@ impl DomainAuthConfig {
         Ok(())
     }
 
-    pub fn save(self, storage: &mut dyn Storage) -> StdResult<()> {
-        DOMAIN_PKS.save(storage, self.domain, &self.dkim_pk)
+    pub fn save(&self, storage: &mut dyn Storage) -> StdResult<()> {
+        DOMAIN_PKS.save(storage, &self.domain, &self.dkim_pk)
     }
 }

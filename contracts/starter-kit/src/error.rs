@@ -66,4 +66,7 @@ pub enum ContractError {
 
     #[error("Invalid reply id: {0}")]
     InvalidReplyId(u64),
+
+    #[error("No voters")]
+    NoVoters {},
 }

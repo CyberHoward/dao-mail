@@ -26,9 +26,9 @@ use osmosis_test_tube::{
 // use crate::ContractError;
 use crate::dkim::DomainAuthConfig;
 use crate::msg::ExecuteMsg;
-use crate::test_helper::constants::{ABSTRACT_DKIM_PUBLIC_KEY, ABSTRACT_DOMAIN};
+use crate::test_helper::constants::{ABSTRACT_DKIM_PUBLIC_KEY, ABSTRACT_DOMAIN, TEST_EMAIL_1, TEST_EMAIL_2};
 use crate::{
-    counter::params::CounterParams,
+    counter::params::EmailAuthParams,
     msg::{CounterResponse, InstantiateMsg, QueryMsg},
     test_helper::authenticator_setup::{
         //add_1ct_session_authenticator, add_all_of_sig_ver_spend_limit_authenticator,
@@ -54,7 +54,7 @@ fn test_happy_path_integration() {
 
     let wasm = Wasm::new(&app);
 
-    let params = CounterParams {
+    let params = EmailAuthParams {
         limit: Uint128::new(1_500_000),
     };
 
@@ -72,11 +72,12 @@ fn test_happy_path_integration() {
         &wasm,
         code_id,
         &InstantiateMsg {
-            auth: DomainAuthConfig {
+            domain_auth: DomainAuthConfig {
                 domain: ABSTRACT_DOMAIN.to_string(),
                 dkim_pk: ABSTRACT_DKIM_PUBLIC_KEY.to_string(),
             },
             params: params.clone(),
+            member_emails: vec![TEST_EMAIL_1.into(), TEST_EMAIL_2.into()]
         },
         &acc_1,
     );

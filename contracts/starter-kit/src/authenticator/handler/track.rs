@@ -27,7 +27,7 @@ pub fn track(
 mod tests {
     use super::*;
 
-    use crate::counter::params::CounterParams;
+    use crate::counter::params::EmailAuthParams;
     use cosmwasm_std::{
         testing::{mock_dependencies_with_balances, mock_env},
         to_json_binary, Addr, Binary, Coin, Uint128,
@@ -45,7 +45,7 @@ mod tests {
             fee_granter: None,
             fee: fee.clone(),
             authenticator_params: Some(
-                to_json_binary(&CounterParams {
+                to_json_binary(&EmailAuthParams {
                     limit: Uint128::new(500_000_000),
                 })
                 .unwrap(),

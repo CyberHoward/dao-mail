@@ -20,21 +20,17 @@ pub fn execute(
             COUNT_TEST.update(deps.storage, |count| -> Result<_, ContractError> {
                 Ok(count + 1)
             })?;
+        },
+        ExecuteMsg::Execute { auth: _, proposal_id } => {
+            crate::cw3::cw3_execute::execute_execute(deps, env, info, proposal_id)?;
         }
-        ExecuteMsg::Execute { msgs } => return Ok(Response::new().add_messages(msgs)),
-        ExecuteMsg::AddAuthenticator { params, contract } => {
-            let auth_data = CosmwasmAuthenticatorData {
-                contract: contract.to_string(),
-                params: to_json_binary(&params).unwrap().to_vec(),
-            };
-
-            let add_auth_msg = MsgAddAuthenticator {
-                sender: env.contract.address.to_string(),
-                r#type: "CosmwasmAuthenticatorV1".to_string(),
-                data: to_json_binary(&auth_data).unwrap().to_vec(),
-            };
-
-            return Ok(Response::new().add_message(add_auth_msg));
+        ExecuteMsg::Propose { auth, title, description, msgs } => {
+            let sender_email = auth.get_sender()?;
+            crate::cw3::cw3_execute::execute_propose(deps, env, info, sender_email, title, description, msgs)?;
+        }
+        ExecuteMsg::Vote { auth, proposal_id, vote } => {
+            let sender_email = auth.get_sender()?;
+            crate::cw3::cw3_execute::execute_vote(deps, env, info, sender_email, proposal_id, vote)?;
         }
     }
     Ok(Response::new().add_attribute("action", "excute"))

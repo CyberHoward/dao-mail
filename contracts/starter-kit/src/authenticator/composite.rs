@@ -160,7 +160,7 @@ impl CompositeAuthenticator for AccountAuthenticator {
 mod tests {
 
     use super::*;
-    use crate::counter::params::CounterParams;
+    use crate::counter::params::EmailAuthParams;
     use cosmwasm_std::to_json_vec;
     use rstest::rstest;
 
@@ -196,7 +196,7 @@ mod tests {
 
     #[test]
     fn test_child_authenticator_data() {
-        let params = CounterParams {
+        let params = EmailAuthParams {
             limit: 1000000u128.into(),
         };
         // no depth
