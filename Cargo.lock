@@ -1566,37 +1566,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "email-dao"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "async-imap",
- "async-native-tls",
- "async-smtp",
- "base64 0.22.1",
- "chatgpt_rs",
- "chrono",
- "cosmwasm-std",
- "cw-orch-daemon",
- "cw3",
- "dotenv",
- "env_logger",
- "futures",
- "google-gmail1",
- "hyper 1.5.0",
- "hyper-rustls 0.27.3",
- "jsonwebtoken",
- "log",
- "reqwest 0.11.27",
- "rust-gmail",
- "rustls 0.23.15",
- "serde",
- "serde_json",
- "tempfile",
- "tokio",
-]
-
-[[package]]
 name = "encoding_rs"
 version = "0.8.35"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4371,6 +4340,37 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bfa7760aed19e106de2c7c0b581b509f2f25d3dacaf737cb82ac61bc6d760b0e"
 dependencies = [
  "try-lock",
+]
+
+[[package]]
+name = "warden-poller"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "async-imap",
+ "async-native-tls",
+ "async-smtp",
+ "base64 0.22.1",
+ "chatgpt_rs",
+ "chrono",
+ "cosmwasm-std",
+ "cw-orch-daemon",
+ "cw3",
+ "dotenv",
+ "env_logger",
+ "futures",
+ "google-gmail1",
+ "hyper 1.5.0",
+ "hyper-rustls 0.27.3",
+ "jsonwebtoken",
+ "log",
+ "reqwest 0.11.27",
+ "rust-gmail",
+ "rustls 0.23.15",
+ "serde",
+ "serde_json",
+ "tempfile",
+ "tokio",
 ]
 
 [[package]]

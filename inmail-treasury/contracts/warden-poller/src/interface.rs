@@ -3,14 +3,14 @@ use cosmwasm_std::Empty;
 use cw_orch::interface;
 use cw_orch::prelude::*;
 
-#[interface(InstantiateMsg, ExecuteMsg, QueryMsg, Empty, id = "email-dao")]
-pub struct EmailDaoI;
+#[interface(InstantiateMsg, ExecuteMsg, QueryMsg, Empty, id = "warden-poller")]
+pub struct WardenPollerI;
 
-impl<Chain: CwEnv> Uploadable for EmailDaoI<Chain> {
+impl<Chain: CwEnv> Uploadable for WardenPollerI<Chain> {
     /// Return the path to the wasm file corresponding to the contract
     fn wasm(_info: &ChainInfoOwned) -> WasmPath {
         artifacts_dir_from_workspace!()
-            .find_wasm_path("email_dao")
+            .find_wasm_path("warden_poller")
             .unwrap()
     }
     /// Returns a CosmWasm contract wrapper
@@ -23,17 +23,21 @@ impl<Chain: CwEnv> Uploadable for EmailDaoI<Chain> {
     }
 }
 
-impl<Chain: CwEnv> EmailDaoI<Chain> {
+impl<Chain: CwEnv> WardenPollerI<Chain> {
     /// Instantiate the contract in any CosmWasm environment
-    pub fn setup(chain: Chain, admin: Addr) -> cw_orch::anyhow::Result<EmailDaoI<Chain>> {
+    pub fn setup(
+        chain: Chain,
+        admin: Addr,
+        dns_server: String,
+    ) -> cw_orch::anyhow::Result<WardenPollerI<Chain>> {
         // Construct the interface
-        let contract = EmailDaoI::new(chain.clone());
+        let contract = WardenPollerI::new(chain.clone());
 
         // Upload the contract
         contract.upload()?;
 
         // Instantiate the contract
-        let msg = InstantiateMsg { count: 1i32 };
+        let msg = InstantiateMsg { dns_server };
         contract.instantiate(&msg, Some(&admin), &[])?;
 
         // Return the interface

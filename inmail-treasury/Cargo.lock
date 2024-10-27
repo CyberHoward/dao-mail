@@ -530,6 +530,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "bindings"
+version = "0.1.0"
+source = "git+https://github.com/warden-protocol/wardenprotocol?branch=hackmos#d01c5f3adec93698c115c27f4d53db1e5d897d0f"
+dependencies = [
+ "cosmwasm-schema 2.1.4",
+ "cosmwasm-std 2.1.4",
+ "schemars",
+ "serde",
+]
+
+[[package]]
 name = "bip32"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1249,11 +1260,36 @@ dependencies = [
  "cosmwasm-std 2.1.4",
  "cw-orch-contract-derive",
  "cw-orch-core",
- "cw-orch-daemon",
+ "cw-orch-daemon 0.27.3",
  "cw-orch-fns-derive",
  "cw-orch-mock",
  "cw-orch-networks",
- "cw-orch-traits",
+ "cw-orch-traits 0.24.1",
+ "cw-utils 2.0.0",
+ "hex",
+ "log",
+ "schemars",
+ "serde",
+ "thiserror",
+ "tokio 1.41.0",
+]
+
+[[package]]
+name = "cw-orch"
+version = "0.27.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8970af7113824ab8d82f0a0d12f92b41d85410f3b7651425989ffa55d517708b"
+dependencies = [
+ "anyhow",
+ "cosmrs 0.19.0",
+ "cosmwasm-std 2.1.4",
+ "cw-orch-contract-derive",
+ "cw-orch-core",
+ "cw-orch-daemon 0.28.0",
+ "cw-orch-fns-derive",
+ "cw-orch-mock",
+ "cw-orch-networks",
+ "cw-orch-traits 0.25.0",
  "cw-utils 2.0.0",
  "hex",
  "log",
@@ -1312,7 +1348,54 @@ dependencies = [
  "cosmwasm-std 2.1.4",
  "cw-orch-core",
  "cw-orch-networks",
- "cw-orch-traits",
+ "cw-orch-traits 0.24.1",
+ "dirs 5.0.1",
+ "ed25519-dalek",
+ "eyre",
+ "file-lock",
+ "flate2",
+ "hex",
+ "http 1.1.0",
+ "lazy_static",
+ "libc-print",
+ "log",
+ "once_cell",
+ "prost 0.13.3",
+ "prost-types 0.13.3",
+ "rand_core 0.6.4",
+ "reqwest 0.12.8",
+ "ring",
+ "ripemd",
+ "schemars",
+ "serde",
+ "serde_json",
+ "sha2 0.10.8",
+ "thiserror",
+ "tokio 1.41.0",
+ "toml 0.8.19",
+ "tonic",
+ "uid",
+]
+
+[[package]]
+name = "cw-orch-daemon"
+version = "0.28.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b1b727ba2031725ee51ecafaa101770827689cd61f3b1f4465ad56237606a500"
+dependencies = [
+ "anyhow",
+ "async-recursion",
+ "base16",
+ "base64 0.22.1",
+ "bech32 0.11.0",
+ "bip39",
+ "bitcoin",
+ "chrono",
+ "cosmrs 0.19.0",
+ "cosmwasm-std 2.1.4",
+ "cw-orch-core",
+ "cw-orch-networks",
+ "cw-orch-traits 0.25.0",
  "dirs 5.0.1",
  "ed25519-dalek",
  "eyre",
@@ -1386,6 +1469,16 @@ checksum = "563311d320c9bdbb2287892a70d54102381a2265c75b65086236c7d85cd7dd87"
 dependencies = [
  "cw-orch-core",
  "prost 0.13.3",
+ "prost-types 0.13.3",
+]
+
+[[package]]
+name = "cw-orch-traits"
+version = "0.25.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2ccb1670cc49a7a10c425ba1072cb607eb00d8085f97692877b9bdb00d14dd3d"
+dependencies = [
+ "cw-orch-core",
  "prost-types 0.13.3",
 ]
 
@@ -1727,7 +1820,7 @@ dependencies = [
  "cosmwasm-std 1.5.8",
  "cw-authenticator",
  "cw-multi-test",
- "cw-orch",
+ "cw-orch 0.26.0",
  "cw-ownable",
  "cw-storage-plus 1.2.0",
  "cw-utils 1.0.3",
@@ -5357,6 +5450,25 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bfa7760aed19e106de2c7c0b581b509f2f25d3dacaf737cb82ac61bc6d760b0e"
 dependencies = [
  "try-lock",
+]
+
+[[package]]
+name = "warden-poller"
+version = "0.1.0"
+dependencies = [
+ "bindings",
+ "cosmwasm-schema 2.1.4",
+ "cosmwasm-std 2.1.4",
+ "cw-multi-test",
+ "cw-orch 0.27.0",
+ "cw-storage-plus 2.0.0",
+ "cw-utils 2.0.0",
+ "cw2 2.0.0",
+ "dotenv",
+ "env_logger",
+ "schemars",
+ "serde",
+ "thiserror",
 ]
 
 [[package]]

@@ -1,7 +1,7 @@
-use cw_orch::{anyhow, prelude::*};
 use cw_orch::daemon::networks::{OSMOSIS_1, PION_1};
-use email_dao::{
-    interface::EmailDaoI,
+use cw_orch::{anyhow, prelude::*};
+use warden_poller::{
+    interface::WardenPollerI,
     msg::{ExecuteMsgFns, InstantiateMsg, QueryMsgFns},
 };
 
@@ -19,7 +19,7 @@ pub fn main() -> anyhow::Result<()> {
 
     let chain = DaemonBuilder::new(network.clone()).build()?;
 
-    let counter = EmailDaoI::new(chain);
+    let counter = WardenPollerI::new(chain);
 
     counter.upload()?;
 

@@ -89,14 +89,14 @@ fn test_happy_path_integration() {
 
     // let authenticator_id =
 
-    // let email_dao_addr = email_auth_instantiate(
+    // let warden_poller_addr = email_auth_instantiate(
     //     &wasm,
     //     code_id,
     //     &InstantiateMsg {},
     //     &acc_1,
     // );
 
-    // execute_email_dao(&app, &acc_1, &authenticator_addr, ExecuteMsg::AddAuthenticator {
+    // execute_warden_poller(&app, &acc_1, &authenticator_addr, ExecuteMsg::AddAuthenticator {
     //     contract: authenticator_addr.clone(),
     //     params: params.clone()
     // }).unwrap();
@@ -185,14 +185,14 @@ fn test_happy_path_integration() {
     //    );
 }
 
-fn execute_email_dao(
+fn execute_warden_poller(
     app: &OsmosisTestApp,
     account: &SigningAccount,
-    email_dao_addr: &str,
+    warden_poller_addr: &str,
     msg: ExecuteMsg,
 ) -> RunnerExecuteResult<MsgExecuteContractResponse> {
     app.execute_cosmos_msgs::<MsgExecuteContractResponse>(
-        &[wasm_execute(email_dao_addr.to_string(), &msg, vec![])
+        &[wasm_execute(warden_poller_addr.to_string(), &msg, vec![])
             .unwrap()
             .into()],
         account,

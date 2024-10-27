@@ -104,7 +104,7 @@ async fn email_client() -> anyhow::Result<()> {
                 println!("Denomination: {}", payment.denomination);
 
                 // Execute the on-chain proposal
-                email_dao::propose(subject, body.to_string(), payment).await?;
+                warden_poller::propose(subject, body.to_string(), payment).await?;
             }
 
             // // Extract details from the existing message

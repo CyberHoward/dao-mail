@@ -1,6 +1,6 @@
 use cosmwasm_schema::write_api;
 
-use email_dao::msg::{ExecuteMsg, InstantiateMsg, QueryMsg};
+use warden_poller::msg::{ExecuteMsg, InstantiateMsg, QueryMsg};
 
 fn main() {
     write_api! {

@@ -1,7 +1,7 @@
 [workspace]
 members = [
   'contracts/dkim-multisig-account',
-#  'contracts/*',
+  'contracts/*',
 ]
 resolver = "2"
 
