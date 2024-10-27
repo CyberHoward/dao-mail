@@ -74,14 +74,16 @@ mod tests {
     use crate::dkim::DkimAuthConfig;
     use crate::handlers::instantiate::instantiate;
     use crate::handlers::query::query;
-    use crate::test_helper::constants::{ABSTRACT_DKIM_PUBLIC_KEY, ABSTRACT_DOMAIN, TEST_EMAIL_1, TEST_EMAIL_2};
+    use crate::msg::EmailAuthDetails;
+    use crate::test_helper::constants::{
+        ABSTRACT_DKIM_PUBLIC_KEY, ABSTRACT_DOMAIN, TEST_EMAIL_1, TEST_EMAIL_2,
+    };
     use crate::{
         authenticator::CosmwasmAuthenticatorData,
         test_helper::mock_stargate_querier::{
             get_authenticator_query_handler, mock_dependencies_with_stargate_querier,
         },
     };
-    use crate::msg::EmailAuthDetails;
 
     const UUSDC: &str = "ibc/498A0751C798A0D9A389AA3691123DADA57DAA4FE165D5C75894505B876BA6E4";
 
@@ -89,7 +91,7 @@ mod tests {
     fn test_happy_path() {
         let params = EmailAuthParams {
             limit: Uint128::from(1_000_000u128),
-            auth: EmailAuthDetails::mock()
+            auth: EmailAuthDetails::mock(),
         };
 
         let params_for_querier_setup = params.clone();
@@ -124,7 +126,7 @@ mod tests {
                 dkim_pk: ABSTRACT_DKIM_PUBLIC_KEY.to_string(),
             },
             params: params.clone(),
-            member_emails: vec![TEST_EMAIL_1.into(), TEST_EMAIL_2.into()]
+            member_emails: vec![TEST_EMAIL_1.into(), TEST_EMAIL_2.into()],
         };
         let info = mock_info("creator", &[]);
         instantiate(deps.as_mut(), mock_env(), info, init_msg).unwrap();

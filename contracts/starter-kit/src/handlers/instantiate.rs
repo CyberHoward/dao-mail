@@ -1,13 +1,13 @@
-use cosmwasm_std::{DepsMut, entry_point, Env, MessageInfo, Response, to_json_binary};
+use cosmwasm_std::{entry_point, to_json_binary, DepsMut, Env, MessageInfo, Response};
 use cw2::set_contract_version;
 use osmosis_std::types::osmosis::smartaccount::v1beta1::MsgAddAuthenticator;
 
 use crate::authenticator::CosmwasmAuthenticatorData;
 use crate::contract::{CONTRACT_NAME, CONTRACT_VERSION};
-use crate::ContractError;
 use crate::counter::params::EmailAuthParams;
 use crate::msg::InstantiateMsg;
 use crate::state::EMAILS;
+use crate::ContractError;
 
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn instantiate(
@@ -26,7 +26,6 @@ pub fn instantiate(
     setup_mulitsig(deps, &msg)?;
 
     let add_auth_msg = add_self_authenticator(env, &msg.params);
-
 
     Ok(
         Response::new()

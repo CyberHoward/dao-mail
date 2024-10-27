@@ -20,17 +20,44 @@ pub fn execute(
             COUNT_TEST.update(deps.storage, |count| -> Result<_, ContractError> {
                 Ok(count + 1)
             })?;
-        },
-        ExecuteMsg::Execute { auth: _, proposal_id } => {
+        }
+        ExecuteMsg::Execute {
+            auth: _,
+            proposal_id,
+        } => {
             crate::cw3::cw3_execute::execute_execute(deps, env, info, proposal_id)?;
         }
-        ExecuteMsg::Propose { auth, title, description, msgs } => {
+        ExecuteMsg::Propose {
+            auth,
+            title,
+            description,
+            msgs,
+        } => {
             let sender_email = auth.get_sender()?;
-            crate::cw3::cw3_execute::execute_propose(deps, env, info, sender_email, title, description, msgs)?;
+            crate::cw3::cw3_execute::execute_propose(
+                deps,
+                env,
+                info,
+                sender_email,
+                title,
+                description,
+                msgs,
+            )?;
         }
-        ExecuteMsg::Vote { auth, proposal_id, vote } => {
+        ExecuteMsg::Vote {
+            auth,
+            proposal_id,
+            vote,
+        } => {
             let sender_email = auth.get_sender()?;
-            crate::cw3::cw3_execute::execute_vote(deps, env, info, sender_email, proposal_id, vote)?;
+            crate::cw3::cw3_execute::execute_vote(
+                deps,
+                env,
+                info,
+                sender_email,
+                proposal_id,
+                vote,
+            )?;
         }
     }
     Ok(Response::new().add_attribute("action", "excute"))

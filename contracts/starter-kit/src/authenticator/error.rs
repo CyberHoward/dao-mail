@@ -1,8 +1,8 @@
+use super::composite::CompositeAuthenticatorError;
+use crate::ContractError;
 use cosmwasm_std::{Addr, StdError};
 use cw_utils::PaymentError;
 use thiserror::Error;
-use crate::ContractError;
-use super::composite::CompositeAuthenticatorError;
 
 #[derive(Error, Debug, PartialEq)]
 pub enum AuthenticatorError {
@@ -26,7 +26,6 @@ pub enum AuthenticatorError {
         account: Addr,
         authenticator_id: String,
     },
-
 
     #[error("Failed to parse headers: {0}")]
     FailedToParseHeaders(String),

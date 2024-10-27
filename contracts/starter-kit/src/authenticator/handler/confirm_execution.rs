@@ -22,14 +22,14 @@ pub fn confirm_execution(
 
 #[cfg(test)]
 mod tests {
+    use super::*;
+    use crate::msg::EmailAuthDetails;
     use cosmwasm_std::{
         testing::{mock_dependencies_with_balances, mock_env},
         to_json_binary, Addr, Binary, Coin, Response, Uint128,
     };
     use cw_authenticator::ConfirmExecutionRequest;
     use rstest::rstest;
-    use crate::msg::EmailAuthDetails;
-    use super::*;
 
     #[rstest]
     #[case::spend_at_limit(1000, 500, 500, vec![Coin::new(1_000_000_000, "uosmo")], Ok(Response::new()))]
@@ -62,7 +62,7 @@ mod tests {
             authenticator_params: Some(
                 to_json_binary(&EmailAuthParams {
                     limit: Uint128::new(limit),
-                    auth: EmailAuthDetails::mock()
+                    auth: EmailAuthDetails::mock(),
                 })
                 .unwrap(),
             ),

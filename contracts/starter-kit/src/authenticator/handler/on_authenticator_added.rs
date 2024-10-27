@@ -15,7 +15,9 @@ pub fn on_authenticator_added(
         ..
     }: OnAuthenticatorAddedRequest,
 ) -> Result<Response, AuthenticatorError> {
-    let EmailAuthParams { auth: email_auth, .. } = validate_and_parse_params(authenticator_params)?;
+    let EmailAuthParams {
+        auth: email_auth, ..
+    } = validate_and_parse_params(authenticator_params)?;
 
     // verify that the auth params are valid for both the domain and the initial params
     let dkim_auth_config = DKIM_AUTH_CONFIG.load(deps.storage)?;
@@ -27,7 +29,9 @@ pub fn on_authenticator_added(
     let sender_email = email_auth.get_sender()?;
 
     // TODO HACKATHON: do we need to store the sender email as a member or as an admin?
-    Ok(Response::new().add_attribute("action", "on_authenticator_added").add_attribute("creator_email", sender_email))
+    Ok(Response::new()
+        .add_attribute("action", "on_authenticator_added")
+        .add_attribute("creator_email", sender_email))
 }
 
 #[cfg(test)]

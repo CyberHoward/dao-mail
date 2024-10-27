@@ -28,12 +28,12 @@ mod tests {
     use super::*;
 
     use crate::counter::params::EmailAuthParams;
+    use crate::msg::EmailAuthDetails;
     use cosmwasm_std::{
         testing::{mock_dependencies_with_balances, mock_env},
         to_json_binary, Addr, Binary, Coin, Uint128,
     };
     use cw_authenticator::TrackRequest;
-    use crate::msg::EmailAuthDetails;
 
     #[test]
     fn test_track_success() {
@@ -48,7 +48,7 @@ mod tests {
             authenticator_params: Some(
                 to_json_binary(&EmailAuthParams {
                     limit: Uint128::new(500_000_000),
-                    auth: EmailAuthDetails::mock()
+                    auth: EmailAuthDetails::mock(),
                 })
                 .unwrap(),
             ),

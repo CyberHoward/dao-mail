@@ -20,13 +20,13 @@ pub fn on_authenticator_removed(
 
 #[cfg(test)]
 mod tests {
+    use super::*;
     use crate::counter::params::EmailAuthParams;
+    use crate::msg::EmailAuthDetails;
     use cosmwasm_std::{
         testing::{mock_dependencies, mock_env},
         to_json_binary, Addr,
     };
-    use crate::msg::EmailAuthDetails;
-    use super::*;
 
     #[test]
     fn test_on_authenticator_removed() {

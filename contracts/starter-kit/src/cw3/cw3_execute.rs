@@ -1,17 +1,11 @@
 use std::cmp::Ordering;
 
-use cosmwasm_std::{
-    CosmosMsg, DepsMut, Empty, Env, MessageInfo,
-    Response,
-};
-use cw3::{
-    Ballot, Proposal, Status, Vote
-    , Votes,
-};
-use cw3_fixed_multisig::state::{BALLOTS, CONFIG, next_id, PROPOSALS};
 use crate::error::ContractError;
 use crate::msg::EmailAddress;
 use crate::state::EMAILS;
+use cosmwasm_std::{CosmosMsg, DepsMut, Empty, Env, MessageInfo, Response};
+use cw3::{Ballot, Proposal, Status, Vote, Votes};
+use cw3_fixed_multisig::state::{next_id, BALLOTS, CONFIG, PROPOSALS};
 
 pub fn execute_propose(
     deps: DepsMut,
