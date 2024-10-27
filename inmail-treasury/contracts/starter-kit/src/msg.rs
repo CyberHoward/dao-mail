@@ -47,38 +47,26 @@ impl EmailAuthDetails {
     }
 }
 
-#[cfg(test)]
-mod email_auth_details_test {
-    use super::*;
-    use crate::counter::params::TEST_USER_HEADER;
-
-    #[test]
-    fn test_get_sender() {
-        let test_details = EmailAuthDetails {
-            headers: TEST_USER_HEADER.to_string(),
-            signature: "garbage".to_string(),
-        };
-
-        test_details.get_sender().unwrap();
-    }
-}
-
 #[cw_ownable_execute]
 #[cw_serde]
 #[derive(cw_orch::ExecuteFns)]
 pub enum ExecuteMsg {
     Count {},
+    /// Create a proposal to be executed
+    /// @returns ProposalId
     Propose {
         auth: EmailAuthDetails,
         title: String,
         description: String,
         msgs: Vec<CosmosMsg<Empty>>,
     },
+    /// Vote on a proposal
     Vote {
         auth: EmailAuthDetails,
         proposal_id: u64,
         vote: Vote,
     },
+    /// Execute a proposal
     #[cw_orch(fn_name("execute_proposal"))]
     Execute {
         auth: EmailAuthDetails,
@@ -99,4 +87,20 @@ pub enum QueryMsg {
 #[cw_serde]
 pub struct CounterResponse {
     pub count: Uint64,
+}
+
+#[cfg(test)]
+mod email_auth_details_test {
+    use super::*;
+    use crate::counter::params::TEST_USER_HEADER;
+
+    #[test]
+    fn test_get_sender() {
+        let test_details = EmailAuthDetails {
+            headers: TEST_USER_HEADER.to_string(),
+            signature: "garbage".to_string(),
+        };
+
+        test_details.get_sender().unwrap();
+    }
 }
