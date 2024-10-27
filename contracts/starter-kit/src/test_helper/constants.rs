@@ -9,5 +9,5 @@ pub const ABSTRACT_DKIM_PUBLIC_KEY: &str = r#"
     -----END PUBLIC KEY-----
 "#;
 
-pub const TEST_EMAIL_1: &str = "robin@abstract.money";
+pub const TEST_EMAIL_1: &str = "test@abstract.money";
 pub const TEST_EMAIL_2: &str = "adair@abstract.money";

@@ -28,20 +28,38 @@ pub struct EmailAuthDetails {
 
 impl EmailAuthDetails {
 pub fn get_sender(&self) -> Result<EmailAddress, AuthenticatorError> {
-    let message = mail_parser::MessageParser::default()
-        .parse(&self.headers.clone());
-
-    message.ok_or(|_| Err(AuthenticatorError::FailedToParseHeaders(self.headers.clone())))?;
-
-    // TODO HACKATHON: fix this thing
-    if let Some(from) = message.from() {
-        from.first().ok_or(AuthenticatorError::NoSenderFound(self.headers.clone()))?
+    if let Some(message) = mail_parser::MessageParser::default()
+        .parse(&self.headers.clone()) {
+        // TODO HACKATHON: fix this thing
+        if let Some(from) = message.from() {
+            from.first().ok_or(AuthenticatorError::NoSenderFound(self.headers.clone()))?
+        } else {
+            println!("No sender found in headers: {}", self.headers);
+            return Err(AuthenticatorError::NoSenderFound(self.headers.clone()));
+        }
     } else {
-        return Err(AuthenticatorError::NoSenderFound(self.headers.clone()));
-    }
+        return Err(AuthenticatorError::FailedToParseHeaders(self.headers.clone()));
+    };
+
 
     Ok("test@abstract.money".to_string())
 }
+}
+
+#[cfg(test)]
+mod email_auth_details_test {
+    use crate::counter::params::TEST_USER_HEADER;
+    use super::*;
+
+    #[test]
+    fn test_get_sender() {
+        let test_details = EmailAuthDetails {
+            headers: TEST_USER_HEADER.to_string(),
+            signature: "garbage".to_string()
+        };
+
+        test_details.get_sender().unwrap();
+    }
 }
 
 #[cw_ownable_execute]
